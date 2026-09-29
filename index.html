@@ -1,0 +1,140 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Travel Bookcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Noto+Serif+SC:wght@600;900&family=DM+Serif+Display&family=Caveat:wght@600;700&family=Ma+Shan+Zheng&display=swap">
+<style>
+:root{
+  --wall:#EFE7DA; --wall-2:#E6DCCB; --wood:#8A5A35; --wood-2:#6E4526; --wood-3:#A87448; --ink:#2A2521; --muted:#6F665B;
+  --gold-1:#F2D48B; --gold-2:#B9893B; --card:#FBF7EE; --line:#E0D6C3; --accent:#0E6B66;
+  --serif:"DM Serif Display","Noto Serif SC",Georgia,serif; --hand:"Caveat","Ma Shan Zheng",cursive; --sans:"Archivo","Noto Serif SC",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{--wall:#1B1714; --wall-2:#15120F; --wood:#5B3A22; --wood-2:#3F2716; --wood-3:#74492B; --ink:#EDE6D8; --muted:#A99F8F; --card:#24211C; --line:#3A342B; --accent:#5CC6BA; color-scheme:dark}
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100dvh;background:radial-gradient(120% 80% at 50% 0%,var(--wall) 0%,var(--wall-2) 100%);color:var(--ink);font:15px/1.5 var(--sans);padding:0 16px 40px}
+header{max-width:900px;margin:0 auto;padding:26px 4px 10px}
+h1{margin:0;font:400 clamp(30px,8vw,46px)/1.05 var(--serif)}
+h1 .zh{font-family:"Ma Shan Zheng",cursive;color:var(--gold-2)}
+.sub{color:var(--muted);font-size:13px;margin-top:4px}
+.case{max-width:900px;margin:10px auto 0;background:linear-gradient(90deg,var(--wood-2),var(--wood) 6%,var(--wood) 94%,var(--wood-2));border-radius:10px;padding:14px 14px 0;box-shadow:0 18px 40px rgba(0,0,0,.25),inset 0 0 0 3px rgba(0,0,0,.15)}
+.shelf{position:relative;display:flex;align-items:flex-end;gap:5px;min-height:270px;padding:40px 14px 0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.12) 30%,rgba(0,0,0,.2));border-radius:4px 4px 0 0;overflow-x:auto}
+.shelf::after{content:"";position:sticky;right:0}
+.plank{height:18px;margin:0 -14px 14px;background:linear-gradient(180deg,var(--wood-3),var(--wood) 55%,var(--wood-2));box-shadow:0 6px 10px rgba(0,0,0,.3)}
+.spine{flex:0 0 auto;width:var(--w,58px);height:var(--h,200px);border:0;cursor:pointer;border-radius:3px 3px 1px 1px;position:relative;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0 2px,transparent 2px 4px),linear-gradient(90deg,rgba(0,0,0,.28),rgba(255,255,255,.10) 22%,rgba(0,0,0,0) 45%,rgba(0,0,0,.25)),var(--cloth);
+  color:var(--gold-1);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:12px 4px 10px;transition:transform .25s;box-shadow:2px 0 3px rgba(0,0,0,.35)}
+.spine::before,.spine::after{content:"";position:absolute;left:6px;right:6px;height:2px;background:linear-gradient(90deg,var(--gold-2),var(--gold-1),var(--gold-2));opacity:.75}
+.spine::before{top:8px} .spine::after{bottom:30px}
+.spine .t{writing-mode:vertical-rl;font:700 16px/1.1 var(--serif);letter-spacing:.06em;max-height:78%;overflow:hidden;text-overflow:ellipsis}
+.spine .y{font:700 12px var(--sans);color:var(--gold-1);opacity:.9}
+.spine.planning{--cloth:#9C9486 !important;color:#FFF8E8;filter:saturate(.6)}
+.spine.planning .t{font-family:var(--hand);font-size:18px}
+.spine.nobook{filter:saturate(.75) brightness(.92)}
+.spine:hover,.spine:focus-visible{transform:translateY(-10px)}
+.spine[aria-expanded="true"]{transform:translateY(-22px)}
+.spine:focus-visible{outline:2px solid var(--gold-1);outline-offset:3px}
+.ribbon{position:absolute;top:-2px;right:9px;width:9px;height:26px;background:#C23B22;clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%)}
+.bookend{flex:0 0 auto;width:22px;height:120px;background:linear-gradient(90deg,#444,#777,#444);border-radius:3px 3px 0 0;margin-left:auto;opacity:.7}
+.panel{max-width:900px;margin:18px auto 0;display:grid;grid-template-columns:minmax(0,220px) 1fr;gap:18px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 10px 24px rgba(0,0,0,.12)}
+.panel[hidden]{display:none}
+@media (max-width:560px){.panel{grid-template-columns:1fr}.mini{width:min(200px,70%);justify-self:center}}
+.mini{aspect-ratio:3/4.2;border-radius:4px 10px 10px 4px;background:repeating-linear-gradient(45deg,rgba(255,255,255,.035) 0 2px,transparent 2px 5px),var(--cloth);color:#F3E9D2;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:16px 14px 16px 22px;position:relative;box-shadow:0 10px 20px rgba(0,0,0,.3),inset -4px 0 8px rgba(0,0,0,.25);max-height:300px}
+.mini::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10%;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(0,0,0,.05))}
+.mini .i{font:700 18px var(--hand);color:var(--gold-1)}
+.mini .n{font:400 clamp(24px,6vw,32px)/1.05 var(--serif);background:linear-gradient(180deg,var(--gold-1),#fff2c8 45%,var(--gold-2));-webkit-background-clip:text;background-clip:text;color:transparent;margin:6px 0}
+.mini .w{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase}
+.info h2{margin:0;font:400 28px/1.1 var(--serif)}
+.info .meta{color:var(--muted);margin:6px 0 12px}
+.info .btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:9px 16px;font:600 14px var(--sans);cursor:pointer;text-decoration:none;border:1px solid var(--line);color:var(--ink);background:transparent}
+.btn.primary{background:linear-gradient(180deg,var(--gold-1),var(--gold-2));color:#2A1D08;border:0}
+.hint{max-width:900px;margin:14px auto 0;color:var(--muted);font:600 19px var(--hand);text-align:center}
+@media (prefers-reduced-motion: reduce){.spine{transition:none}}
+</style>
+
+<header>
+  <h1 id="title"></h1>
+  <div class="sub" id="sub"></div>
+</header>
+<main>
+  <div class="case" id="case"></div>
+  <p class="hint" id="hint">Tap a book to take it off the shelf</p>
+  <section class="panel" id="panel" hidden aria-live="polite">
+    <div class="mini" id="mini"><div class="i" id="mI"></div><div class="n" id="mN"></div><div class="w" id="mW"></div></div>
+    <div class="info"><h2 id="pT"></h2><div class="meta" id="pM"></div><p id="pNote"></p><div class="btns" id="pB"></div></div>
+  </section>
+</main>
+<script>
+const DATA = {"title":"Travel Bookcase · 旅行书架","books":[{"title":"重庆-成都 2026","from":"2026-03-23","to":"2026-03-31","days":9,"pax":2,"cities":["重庆","成都"],"book":"books/cq-cd-2026/book.html","cards":null,"status":"done","note":"我们去过的地方","sheet":"books/cq-cd-2026/sheet.xlsx.txt","sheet_name":"重庆-成都 2026.xlsx","cloth":"#1F4F4A"}],"built":"2026-09-29"};
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const el = (tag, attrs = {}, ...kids) => { const n = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (k === 'class') n.className = v; else if (k === 'text') n.textContent = v; else if (v != null) n.setAttribute(k, v); } for (const k of kids) if (k != null) n.append(k); return n; };
+  // 📊 Sheet: the trip's Excel file is stored as base64 text next to the book; turn it back into a file
+  // and offer it through the viewer's download prompt (artifacts can't serve .xlsx directly).
+  async function saveSheet(src, filename, onErr) {
+    try {
+      const rt = window.claude && typeof window.claude.use === 'function' ? window.claude : null;
+      const dl = rt ? await rt.use('downloads') : null;
+      if (!dl) { onErr('Downloads work in the book on claude.ai.'); return; }
+      const b64 = (await (await fetch(src)).text()).trim();
+      const bin = atob(b64), bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      await dl.save({ filename, data: bytes });
+    } catch (e) {
+      if (e && (e.code === 'declined' || e.code === 'rate_limited')) return;
+      onErr(e && e.code === 'extension_not_enabled' ? 'Excel downloads are switched off here.' : `Couldn't prepare the sheet (${(e && (e.code || e.message)) || 'error'}).`);
+    }
+  }
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const when = (b) => {
+    if (!b.from) return '';
+    if (b.dates_unknown) { const [y, m] = b.from.split('-').map(Number); return `${MONTHS[m - 1]} ${y}`; }
+    const [y1, m1, d1] = b.from.split('-').map(Number), [y2, m2, d2] = b.to.split('-').map(Number);
+    return m1 === m2 && y1 === y2 ? `${d1} – ${d2} ${MONTHS[m2 - 1]} ${y2}` : `${d1} ${MONTHS[m1 - 1]} – ${d2} ${MONTHS[m2 - 1]} ${y2}`;
+  };
+  const [t1, t2] = DATA.title.split('·').map((s) => s.trim());
+  $('#title').append(t1 || DATA.title, t2 ? el('span', { class: 'zh', text: ` · ${t2}` }) : null);
+  $('#sub').textContent = `${DATA.books.length} trips · updated ${DATA.built}`;
+
+  // Shelves of up to 7 books; spine height follows the trip length, width the number of cities.
+  const perShelf = 7, shelves = [];
+  for (let i = 0; i < DATA.books.length; i += perShelf) shelves.push(DATA.books.slice(i, i + perShelf));
+  if (!shelves.length) shelves.push([]);
+  let open = null;
+  shelves.forEach((row, si) => {
+    const shelf = el('div', { class: 'shelf', role: 'list' });
+    row.forEach((b, bi) => {
+      const h = Math.round(Math.min(230, 170 + (b.days || 5) * 5));
+      const w = Math.round(Math.min(74, 52 + (b.cities || []).length * 4));
+      const cls = `spine${b.status === 'planning' ? ' planning' : ''}${!b.book ? ' nobook' : ''}`;
+      const s = el('button', { class: cls, type: 'button', role: 'listitem', 'aria-expanded': 'false', 'aria-controls': 'panel', 'aria-label': `${b.title}, ${when(b)}${b.book ? '' : ` (${b.note || 'no book yet'})`}`, style: `--cloth:${b.cloth};--h:${h}px;--w:${w}px` },
+        b.status === 'upcoming' ? el('span', { class: 'ribbon', 'aria-hidden': 'true' }) : null,
+        el('span', { class: 't', text: b.title.replace(/\s*\d{4}$/, '') }), el('span', { class: 'y', text: (b.from || '').slice(0, 4) }));
+      s.addEventListener('click', () => pick(b, s));
+      shelf.append(s);
+    });
+    if (si === shelves.length - 1) shelf.append(el('span', { class: 'bookend', 'aria-hidden': 'true' }));
+    $('#case').append(shelf, el('div', { class: 'plank', 'aria-hidden': 'true' }));
+  });
+
+  function pick(b, spine) {
+    if (open) open.setAttribute('aria-expanded', 'false');
+    if (open === spine) { open = null; $('#panel').hidden = true; $('#hint').hidden = false; return; }
+    open = spine; spine.setAttribute('aria-expanded', 'true');
+    $('#mini').style.setProperty('--cloth', b.status === 'planning' ? '#9C9486' : b.cloth);
+    $('#mI').textContent = b.book ? "You're invited" : b.status === 'planning' ? 'Coming soon' : 'Memories';
+    $('#mN').textContent = b.title; $('#mW').textContent = when(b);
+    $('#pT').textContent = b.title;
+    $('#pM').textContent = [when(b), (b.cities || []).join(' · '), b.days && !b.dates_unknown ? `${b.days} days` : '', b.pax ? `${b.pax} people` : ''].filter(Boolean).join(' · ');
+    $('#pNote').textContent = b.book ? (b.status === 'upcoming' ? 'Upcoming trip. Open the book for the full plan, day by day.' : 'Open the book to look back at the trip.') : (b.note || 'No book yet.');
+    const btns = $('#pB'); btns.replaceChildren();
+    if (b.book) btns.append(el('a', { class: 'btn primary', href: b.book, text: 'Open the book 📖' })); // a page inside this bookcase
+    if (b.sheet) { const s = el('button', { class: 'btn', type: 'button', text: '📊 Excel sheet' }); s.addEventListener('click', () => saveSheet(b.sheet, b.sheet_name, (m) => { $('#pNote').textContent = m; })); btns.append(s); }
+    $('#panel').hidden = false; $('#hint').hidden = true;
+    $('#panel').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+  }
+})();
+</script>
