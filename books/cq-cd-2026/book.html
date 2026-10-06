@@ -472,7 +472,11 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   const driveColor = () => getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#2A2521';
   const pts = (arr) => arr.map((p) => p.join(',')).join(' ');
   function drawRoutes(svg, shapes, width) {
-    for (const s of shapes) svg.append(svgEl('polyline', { points: pts(s.px), class: `route ${s.kind}`, stroke: s.kind === 'ride' ? (s.color || '#0E6B66') : s.kind === 'drive' ? driveColor() : walkColor(), 'stroke-width': s.kind === 'ride' ? width : width * 0.7 }));
+    // Phone-first book: a day map is shrunk to the phone's width, so its routes are drawn bolder, on a light casing.
+    const bold = phone() ? 2.4 : 1, w = (s) => (s.kind === 'ride' ? width : width * 0.7) * bold;
+    if (bold > 1) for (const s of shapes) svg.append(svgEl('polyline', { points: pts(s.px), class: 'route casing', stroke: '#FFFDF7', 'stroke-width': w(s) + 5, 'stroke-opacity': 0.9 }));
+    for (const s of shapes) svg.append(svgEl('polyline', { points: pts(s.px), class: `route ${s.kind}`, stroke: s.kind === 'ride' ? (s.color || '#0E6B66') : s.kind === 'drive' ? driveColor() : walkColor(), 'stroke-width': w(s),
+      style: bold > 1 && s.kind !== 'ride' ? `stroke-dasharray:${s.kind === 'walk' ? `1 ${6 * bold}` : `${8 * bold} ${6 * bold}`}` : null }));
   }
   const rand = (seed) => { let x = (seed * 2654435761) % 4294967296 || 1; return () => ((x = (x * 1664525 + 1013904223) % 4294967296) / 4294967296); };
   function loopPath(c, seed) {
@@ -794,6 +798,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   // the stop it leads to. -1 when the day starts with a move from somewhere not in the plan.
   function pinStop(di, p) {
     const rows = TRIP.days[di].rows;
+    if (p.to !== undefined) return -1; // a place passed through between two moves (no stop row of its own)
     if (p.from !== undefined) { for (let j = p.row - 1; j >= 0; j--) if (!rows[j].isMove) return j; return -1; }
     return hostRow[di][p.row];
   }
@@ -850,7 +855,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       for (const p of main.pins || []) { // every pin, numbered as on the map
         const ri = pinStop(di, p), r = ri >= 0 ? d.rows[ri] : null;
         const b = el(r ? 'button' : 'div', r ? { type: 'button' } : { class: 'plain' }, el('span', { class: 'n', text: p.n }),
-          el('span', { class: 'tt-p' }, el('span', { class: 'zh', text: r ? r.place_zh : p.from }), r && r.place_en && r.place_en !== r.place_zh ? el('span', { class: 'en', text: r.place_en }) : null));
+          el('span', { class: 'tt-p' }, el('span', { class: 'zh', text: r ? r.place_zh : p.from || p.to }), r && r.place_en && r.place_en !== r.place_zh ? el('span', { class: 'en', text: r.place_en }) : null));
         if (r) b.addEventListener('click', () => openStop(di, ri));
         ol.append(el('li', {}, b));
       }
