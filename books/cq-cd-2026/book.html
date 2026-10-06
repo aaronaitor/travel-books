@@ -146,7 +146,17 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
   body.phone .tt-head .tt-p{display:inline} body.phone .tt-head .tt-p .zh{display:inline} body.phone .tt-head .tt-p .en{display:block}
   body.phone .tt-th{float:right;margin-left:8px}
   body.phone .tt-p .zh{font-size:16px} body.phone .tt-p .en{font-size:13px}
-  body.phone .tt-more summary{font-size:14px;padding:8px 0}
+  /* phone: a stop's details fold open from a drawn chevron at the right of its row (no emoji, no text line) */
+  body.phone .tt-stop{position:relative}
+  body.phone .tt-head{padding-right:40px}
+  body.phone .tt-more{margin:0}
+  body.phone .tt-more > summary{position:absolute;top:0;right:0;width:40px;height:44px;padding:0;font-size:0;list-style:none;cursor:pointer}
+  body.phone .tt-more > summary::-webkit-details-marker{display:none}
+  body.phone .tt-more > summary::after{content:"";position:absolute;left:50%;top:50%;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translate(-70%,-50%) rotate(-45deg);transition:transform .2s}
+  body.phone .tt-more[open] > summary::after{transform:translate(-50%,-75%) rotate(45deg)}
+  body.phone .ticket summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);top:20px;right:16px;transform:rotate(-45deg);transition:transform .2s}
+  body.phone .ticket[open] summary::after{transform:rotate(45deg)}
+  body.phone .tt-more > summary:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:8px}
   body.phone .tt-mv .ticket summary{padding:10px 34px 10px 12px}
   body.phone .tt-stop .about{font-size:14px}
   body.phone .hotel{font-size:14px}
@@ -891,7 +901,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       if (r.about) li.append(el('p', { class: 'about', text: r.about }));
       if (r.details) {
         const food = /^(早餐|午餐|晚餐|Breakfast|Lunch|Dinner)|\n(早餐|午餐|晚餐)/.test(r.details);
-        li.append(unfold(el('details', { class: 'tt-more' }, el('summary', { text: food ? '🍜 Food list & notes' : 'ℹ️ Details' }), el('pre', { class: 'details', text: r.details })), `${di}:${ri}:d`));
+        li.append(unfold(el('details', { class: 'tt-more' }, el('summary', phone() ? { 'aria-label': food ? 'Food list and notes' : 'Details' } : { text: food ? '🍜 Food list & notes' : 'ℹ️ Details' }), el('pre', { class: 'details', text: r.details })), `${di}:${ri}:d`));
       }
       ol.append(li);
     });
