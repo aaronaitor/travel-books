@@ -140,6 +140,7 @@ body.phone .legend .tt-p .zh{font-size:13px;line-height:1.25;display:-webkit-box
 body.phone .legend .tt-p .en{font-size:11px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body.phone .phonemap .chapter{font-size:32px} body.phone .phonemap .chapter small{font-size:13px;margin-top:4px}
 body.phone .phonemap{gap:10px}
+body.phone .phonemap .tt-title{margin:14px 0 0;font:600 13px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-top:1px dotted var(--line);padding-top:14px}
 body.phone .phonemap .chapter{font-size:38px}
 .legend button,.legend .plain{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:center;min-height:40px;padding:3px 0;border-bottom:1px dotted var(--line);cursor:pointer}
 .legend button:focus-visible{outline:2px solid var(--accent)}
@@ -442,6 +443,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   const wide = () => matchMedia('(min-width:980px)').matches;
   const phone = () => !!TRIP.phone && !wide(); // phone-first book on a phone-sized screen
   const phoneBook = !!TRIP.phone; // its pages (one map page + timetable a day) at every width; wide screens show them side by side
+  const oneDayPage = () => phone() && !!TRIP.scroll_timetable; // phone: map, stops and timetable on one scrolling page a day
   document.body.classList.toggle('phone', !!TRIP.phone);
   const cv = TRIP.cover || {};
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -881,6 +883,10 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       }
       if (ol.children.length) s.append(ol);
     }
+    if (oneDayPage()) { // phone: the timetable right under the map and its stops, one page a day that scrolls
+      const tt = timetablePage(di);
+      s.append(el('h3', { class: 'tt-title', text: 'Timetable' }), tt.querySelector('ol.tt'));
+    }
     return s; // the main map only: one map page per day (a travel day's other city is just where the train leaves)
   }
   function mapPage(di, half) {
@@ -1057,7 +1063,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   function split(p) {
     const full = build(p);
     if ((p.kind === 'map' && !phoneBook) || p.kind === 'blank' || p.kind === 'end') return [{ idx: null }];
-    if (p.kind === 'timetable' && TRIP.scroll_timetable) return [{ idx: null, tall: true, keys: [] }]; // one page per day that scrolls (user's choice for this trip)
+    if ((p.kind === 'timetable' && TRIP.scroll_timetable) || (p.kind === 'map' && oneDayPage())) return [{ idx: null, tall: true, keys: [] }]; // one page per day that scrolls (user's choice for this trip)
     const us = units(full), probe = el('article', { class: 'page probe', 'aria-hidden': 'true' });
     $('#stack').append(probe);
     const parts = []; let cur = [];
@@ -1080,7 +1086,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   // Lay out the whole book for the current size; on wide screens every day's map spread starts on a left page.
   function layout() {
     const logical = [{ kind: 'contents' }, { kind: 'stays' }];
-    TRIP.days.forEach((d, di) => logical.push(...(phoneBook ? [{ kind: 'map', di, half: 0 }] : [{ kind: 'map', di, half: 0 }, { kind: 'map', di, half: 1 }]), { kind: 'timetable', di }, ...(TRIP.tickets === false ? [] : [{ kind: 'tickets', di }])));
+    TRIP.days.forEach((d, di) => logical.push(...(phoneBook ? [{ kind: 'map', di, half: 0 }] : [{ kind: 'map', di, half: 0 }, { kind: 'map', di, half: 1 }]), ...(oneDayPage() ? [] : [{ kind: 'timetable', di }]), ...(TRIP.tickets === false ? [] : [{ kind: 'tickets', di }])));
     if ((TRIP.book_it || []).length) logical.push({ kind: 'bookit' }, { kind: 'end' });
     const out = []; dayStart = []; bookItPage = -1;
     for (const p of logical) {
