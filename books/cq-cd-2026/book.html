@@ -141,8 +141,10 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
   .legend button,.legend .plain{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:center;min-height:40px;padding:3px 0;border-bottom:1px dotted var(--line);cursor:pointer}
   .legend button:focus-visible{outline:2px solid var(--accent)}
   .legend .n{width:22px;height:22px;font-size:11px !important;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font:700 12px var(--mono)}
-  body.phone .tt-head{min-height:44px}
-  body.phone .tt-t{font-size:13px}
+  body.phone .tt-head{min-height:44px;display:block}
+  body.phone .tt-t{font-size:13px;white-space:nowrap;margin-right:8px} /* time inline, before the place name */
+  body.phone .tt-head .tt-p{display:inline} body.phone .tt-head .tt-p .zh{display:inline} body.phone .tt-head .tt-p .en{display:block}
+  body.phone .tt-th{float:right;margin-left:8px}
   body.phone .tt-p .zh{font-size:16px} body.phone .tt-p .en{font-size:13px}
   body.phone .tt-more summary{font-size:14px;padding:8px 0}
   body.phone .tt-mv .ticket summary{padding:10px 34px 10px 12px}
