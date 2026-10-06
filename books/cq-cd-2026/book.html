@@ -154,6 +154,13 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
   body.phone .tt-more > summary::-webkit-details-marker{display:none}
   body.phone .tt-more > summary::after{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:translate(-70%,-50%) rotate(-45deg);transition:transform .2s}
   body.phone .tt-more[open] > summary::after{transform:translate(-50%,-75%) rotate(45deg)}
+  /* phone: a move is a plain timetable row, time then transport on one line, no "Getting here" box */
+  body.phone .tt-mv .ticket{background:none;border:0;border-radius:0;box-shadow:none;border-bottom:1px dotted var(--line)}
+  body.phone .tt-mv .ticket summary{display:block;padding:8px 40px 8px 0;min-height:36px}
+  body.phone .tt-mv .tk-k{display:inline;font:13px var(--mono);letter-spacing:0;text-transform:none;color:var(--muted);white-space:nowrap;margin-right:8px}
+  body.phone .tt-mv .tk-s{display:inline;font-weight:500;color:var(--accent)}
+  body.phone .tt-mv .tk-body{padding:0 0 12px}
+  body.phone .tt-mv .ticket summary::after{top:15px;right:17px}
   body.phone .ticket summary::after{content:"";width:6px;height:6px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);top:22px;right:16px;transform:rotate(-45deg);transition:transform .2s}
   body.phone .ticket[open] summary::after{transform:rotate(45deg)}
   body.phone .tt-more > summary:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:8px}
@@ -544,7 +551,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   const fmtMoney = (n, cur) => `${Math.round(n * 10) / 10} ${cur === 'RMB' ? 'rmb' : cur || ''}`.trim();
   function moveSummary(m) {
     const a = (m.opts || [])[0], lines = (m.stations || []).map((x) => x.line.replace(/（.*$/, ''));
-    const how = a ? `${MODE_IC[a.mode] || ''} ${(a.mode === 'rail' || a.mode === 'bus') && lines.length ? lines.join(' → ') : a.label}` : m.kindLabel;
+    const how = a ? `${phone() ? '' : (MODE_IC[a.mode] || '') + ' '}${(a.mode === 'rail' || a.mode === 'bus') && lines.length ? lines.join(' → ') : a.label}` : m.kindLabel;
     return [how, a && fmtMins(a.mins), a && a.fare != null ? fmtMoney(a.fare, a.cur) + (a.per_pax ? '/pax' : '') : '', m.km ? `${m.km} km` : ''].filter(Boolean).join(' · ');
   }
   function moveMapEl(r) {
@@ -555,7 +562,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   }
   function ticket(m) {
     const d = el('details', { class: 'ticket' }); d.open = !tripOver;
-    d.append(el('summary', {}, el('span', { class: 'tk-k', text: `Getting here · ${m.time}` }), el('span', { class: 'tk-s', text: moveSummary(m) })));
+    d.append(el('summary', {}, el('span', { class: 'tk-k', text: phone() ? m.time : `Getting here · ${m.time}` }), el('span', { class: 'tk-s', text: moveSummary(m) })));
     const b = el('div', { class: 'tk-body' });
     if (m.stations && m.stations.length) b.append(lineStrip(m));
     if (m.walk_km >= 0.3) b.append(el('div', { class: 'tk-walk', text: `🚶 about ${m.walk_km} km on foot` }));
