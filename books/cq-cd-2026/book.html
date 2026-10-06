@@ -131,12 +131,16 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
   body.phone .stack .page .scroll{padding:20px 18px 22px 24px}
   body.phone .phonemap .spreadmap{width:100%;justify-self:stretch}
   body.phone .phonemap .hint2{font-size:16px}
-  .legend{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+  .legend{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;column-gap:12px}
+  .legend li{min-width:0}
+  body.phone .legend .tt-p .zh{font-size:13px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  body.phone .legend .tt-p .en{font-size:11px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.phone .phonemap .chapter{font-size:32px} body.phone .phonemap .chapter small{font-size:13px;margin-top:4px}
   body.phone .phonemap{gap:10px}
   body.phone .phonemap .chapter{font-size:38px}
-  .legend button,.legend .plain{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:center;min-height:44px;padding:4px 2px;border-bottom:1px dotted var(--line);cursor:pointer}
+  .legend button,.legend .plain{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:center;min-height:40px;padding:3px 0;border-bottom:1px dotted var(--line);cursor:pointer}
   .legend button:focus-visible{outline:2px solid var(--accent)}
-  .legend .n{width:26px;height:26px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font:700 12px var(--mono)}
+  .legend .n{width:22px;height:22px;font-size:11px !important;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font:700 12px var(--mono)}
   body.phone .tt-head{min-height:44px}
   body.phone .tt-t{font-size:13px}
   body.phone .tt-p .zh{font-size:16px} body.phone .tt-p .en{font-size:13px}
@@ -839,10 +843,10 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   function phoneMapPage(di) {
     const d = TRIP.days[di], s = el('div', { class: 'scroll phonemap' });
     const main = d.maps.length ? d.maps.reduce((a, b) => ((b.pins || []).length > (a.pins || []).length ? b : a)) : null;
-    s.append(el('div', { class: 'kicker', text: `Chapter ${di + 1}` }), el('h2', { class: 'chapter' }, `Day ${di + 1}`, el('small', { text: d.title.replace(/^Day \d+ · /, '') })));
+    s.append(el('div', { class: 'kicker', hidden: true, text: `Day ${di + 1}` }), el('h2', { class: 'chapter' }, `Day ${di + 1}`, el('small', { text: d.title.replace(/^Day \d+ · /, '') })));
     s.append(main ? spreadMap(di, main) : el('p', { class: 'hotel', text: 'Not planned yet.' }));
     if (main) { // pins are too small to tap on a phone: list them under the map
-      const ol = el('ol', { class: 'legend' });
+      const ol = el('ol', { class: 'legend' }); // two columns, so a whole day fits under the map
       for (const p of main.pins || []) { // every pin, numbered as on the map
         const ri = pinStop(di, p), r = ri >= 0 ? d.rows[ri] : null;
         const b = el(r ? 'button' : 'div', r ? { type: 'button' } : { class: 'plain' }, el('span', { class: 'n', text: p.n }),
