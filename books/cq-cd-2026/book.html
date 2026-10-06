@@ -121,7 +121,8 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
   .stack .page .scroll{padding-left:34px}
 }
 
-/* phone-first book (trip JSON book.phone): chapter strip on top, whole map on one page, bigger taps */
+/* phone-first book (trip JSON book.phone): on phones a chapter strip on top and bigger taps; at any width one map page
+   (whole map + stop list) and one timetable page per day */
 @media (max-width:979px){
   body.phone .reader{padding:calc(54px + env(safe-area-inset-top)) 10px calc(64px + env(safe-area-inset-bottom)) 10px}
   body.phone .thumbs{top:-46px;bottom:auto;left:0;right:0;width:auto;height:40px;flex-direction:row;gap:5px;overflow-x:auto;scrollbar-width:none;padding:0 2px}
@@ -129,46 +130,45 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
   body.phone .thumb{writing-mode:horizontal-tb;flex:0 0 auto;max-height:none;min-height:0;height:36px;min-width:44px;padding:0 12px;border-radius:9px;transform:none;font-size:13px}
   body.phone .thumb[aria-current="true"]{transform:none;box-shadow:inset 0 -3px 0 rgba(0,0,0,.35);outline:2px solid var(--ink);outline-offset:-2px}
   body.phone .stack .page .scroll{padding:20px 18px 22px 24px}
-  body.phone .phonemap .spreadmap{width:100%;justify-self:stretch}
-  body.phone .phonemap .hint2{font-size:16px}
-  .legend{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;column-gap:12px}
-  .legend li{min-width:0}
-  body.phone .legend .tt-p .zh{font-size:13px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  body.phone .legend .tt-p .en{font-size:11px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  body.phone .phonemap .chapter{font-size:32px} body.phone .phonemap .chapter small{font-size:13px;margin-top:4px}
-  body.phone .phonemap{gap:10px}
-  body.phone .phonemap .chapter{font-size:38px}
-  .legend button,.legend .plain{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:center;min-height:40px;padding:3px 0;border-bottom:1px dotted var(--line);cursor:pointer}
-  .legend button:focus-visible{outline:2px solid var(--accent)}
-  .legend .n{width:22px;height:22px;font-size:11px !important;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font:700 12px var(--mono)}
-  body.phone .tt-head{min-height:44px;display:block}
-  body.phone .tt-t{font-size:13px;white-space:nowrap;margin-right:8px} /* time inline, before the place name */
-  body.phone .tt-head .tt-p{display:inline} body.phone .tt-head .tt-p .zh{display:inline} body.phone .tt-head .tt-p .en{display:block}
-  body.phone .tt-th{float:right;margin-left:8px}
-  body.phone .tt-p .zh{font-size:16px} body.phone .tt-p .en{font-size:13px}
-  /* phone: a stop's details fold open from a drawn chevron at the right of its row (no emoji, no text line) */
-  body.phone .tt-stop{position:relative}
-  body.phone .tt-head{padding-right:40px}
-  body.phone .tt-more{margin:0}
-  body.phone .tt-more > summary{position:absolute;top:0;right:0;width:40px;height:44px;padding:0;font-size:0;list-style:none;cursor:pointer}
-  body.phone .tt-more > summary::-webkit-details-marker{display:none}
-  body.phone .tt-more > summary::after{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:translate(-70%,-50%) rotate(-45deg);transition:transform .2s}
-  body.phone .tt-more[open] > summary::after{transform:translate(-50%,-75%) rotate(45deg)}
-  /* phone: a move is a plain timetable row, time then transport on one line, no "Getting here" box */
-  body.phone .tt-mv .ticket{background:none;border:0;border-radius:0;box-shadow:none;border-bottom:1px dotted var(--line)}
-  body.phone .tt-mv .ticket summary{display:block;padding:8px 40px 8px 0;min-height:36px}
-  body.phone .tt-mv .tk-k{display:inline;font:13px var(--mono);letter-spacing:0;text-transform:none;color:var(--muted);white-space:nowrap;margin-right:8px}
-  body.phone .tt-mv .tk-s{display:inline;font-weight:500;color:var(--accent)}
-  body.phone .tt-mv .tk-body{padding:0 0 12px}
-  body.phone .tt-mv .ticket summary::after{top:15px;right:17px}
-  body.phone .ticket summary::after{content:"";width:6px;height:6px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);top:22px;right:16px;transform:rotate(-45deg);transition:transform .2s}
-  body.phone .ticket[open] summary::after{transform:rotate(45deg)}
-  body.phone .tt-more > summary:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:8px}
-  body.phone .tt-mv .ticket summary{padding:10px 34px 10px 12px}
-  body.phone .tt-stop .about{font-size:14px}
-  body.phone .hotel{font-size:14px}
   body.phone .bar button,body.phone .bar a{min-width:44px;min-height:44px;font-size:15px}
 }
+body.phone .phonemap .spreadmap{width:100%;justify-self:stretch}
+body.phone .phonemap .hint2{font-size:16px}
+.legend{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;column-gap:12px}
+.legend li{min-width:0}
+body.phone .legend .tt-p .zh{font-size:13px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+body.phone .legend .tt-p .en{font-size:11px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.phone .phonemap .chapter{font-size:32px} body.phone .phonemap .chapter small{font-size:13px;margin-top:4px}
+body.phone .phonemap{gap:10px}
+body.phone .phonemap .chapter{font-size:38px}
+.legend button,.legend .plain{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:center;min-height:40px;padding:3px 0;border-bottom:1px dotted var(--line);cursor:pointer}
+.legend button:focus-visible{outline:2px solid var(--accent)}
+.legend .n{width:22px;height:22px;font-size:11px !important;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font:700 12px var(--mono)}
+body.phone .tt-head{min-height:44px;display:block}
+body.phone .tt-t{font-size:13px;white-space:nowrap;margin-right:8px} /* time inline, before the place name */
+body.phone .tt-head .tt-p{display:inline} body.phone .tt-head .tt-p .zh{display:inline} body.phone .tt-head .tt-p .en{display:block}
+body.phone .tt-th{float:right;margin-left:8px}
+body.phone .tt-p .zh{font-size:16px} body.phone .tt-p .en{font-size:13px}
+/* phone: a stop's details fold open from a drawn chevron at the right of its row (no emoji, no text line) */
+body.phone .tt-stop{position:relative}
+body.phone .tt-head{padding-right:40px}
+body.phone .tt-more{margin:0}
+body.phone .tt-more > summary{position:absolute;top:0;right:0;width:40px;height:44px;padding:0;font-size:0;list-style:none;cursor:pointer}
+body.phone .tt-more > summary::-webkit-details-marker{display:none}
+body.phone .tt-more > summary::after{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:translate(-70%,-50%) rotate(-45deg);transition:transform .2s}
+body.phone .tt-more[open] > summary::after{transform:translate(-50%,-75%) rotate(45deg)}
+/* phone: a move is a plain timetable row, time then transport on one line, no "Getting here" box */
+body.phone .tt-mv .ticket{background:color-mix(in srgb,var(--accent) 13%,transparent);border:0;border-radius:8px;box-shadow:none}
+body.phone .tt-mv .ticket summary{display:block;padding:8px 40px 8px 10px;min-height:36px}
+body.phone .tt-mv .tk-k{display:inline;font:13px var(--mono);letter-spacing:0;text-transform:none;color:var(--muted);white-space:nowrap;margin-right:8px}
+body.phone .tt-mv .tk-s{display:inline;font-weight:500;color:var(--accent)}
+body.phone .tt-mv .tk-body{padding:0 10px 12px}
+body.phone .tt-mv .ticket summary::after{top:15px;right:17px}
+body.phone .ticket summary::after{content:"";width:6px;height:6px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);top:22px;right:16px;transform:rotate(-45deg);transition:transform .2s}
+body.phone .ticket[open] summary::after{transform:rotate(45deg)}
+body.phone .tt-more > summary:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:8px}
+body.phone .tt-stop .about{font-size:14px}
+body.phone .hotel{font-size:14px}
 
 /* ---------- content pieces (shared with the cards page) ---------- */
 .maps{display:flex;flex-direction:column;gap:10px}
@@ -441,6 +441,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const wide = () => matchMedia('(min-width:980px)').matches;
   const phone = () => !!TRIP.phone && !wide(); // phone-first book on a phone-sized screen
+  const phoneBook = !!TRIP.phone; // its pages (one map page + timetable a day) at every width; wide screens show them side by side
   document.body.classList.toggle('phone', !!TRIP.phone);
   const cv = TRIP.cover || {};
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -492,7 +493,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   const pts = (arr) => arr.map((p) => p.join(',')).join(' ');
   function drawRoutes(svg, shapes, width) {
     // Phone-first book: a day map is shrunk to the phone's width, so its routes are drawn bolder, on a light casing.
-    const bold = phone() ? 2.4 : 1, w = (s) => (s.kind === 'ride' ? width : width * 0.7) * bold;
+    const bold = phoneBook ? (wide() ? 1.6 : 2.4) : 1, w = (s) => (s.kind === 'ride' ? width : width * 0.7) * bold;
     if (bold > 1) for (const s of shapes) svg.append(svgEl('polyline', { points: pts(s.px), class: 'route casing', stroke: '#FFFDF7', 'stroke-width': w(s) + 5, 'stroke-opacity': 0.9 }));
     for (const s of shapes) svg.append(svgEl('polyline', { points: pts(s.px), class: `route ${s.kind}`, stroke: s.kind === 'ride' ? (s.color || '#0E6B66') : s.kind === 'drive' ? driveColor() : walkColor(), 'stroke-width': w(s),
       style: bold > 1 && s.kind !== 'ride' ? `stroke-dasharray:${s.kind === 'walk' ? `1 ${6 * bold}` : `${8 * bold} ${6 * bold}`}` : null }));
@@ -551,7 +552,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   const fmtMoney = (n, cur) => `${Math.round(n * 10) / 10} ${cur === 'RMB' ? 'rmb' : cur || ''}`.trim();
   function moveSummary(m) {
     const a = (m.opts || [])[0], lines = (m.stations || []).map((x) => x.line.replace(/（.*$/, ''));
-    const how = a ? `${phone() ? '' : (MODE_IC[a.mode] || '') + ' '}${(a.mode === 'rail' || a.mode === 'bus') && lines.length ? lines.join(' → ') : a.label}` : m.kindLabel;
+    const how = a ? `${phoneBook ? '' : (MODE_IC[a.mode] || '') + ' '}${(a.mode === 'rail' || a.mode === 'bus') && lines.length ? lines.join(' → ') : a.label}` : m.kindLabel;
     return [how, a && fmtMins(a.mins), a && a.fare != null ? fmtMoney(a.fare, a.cur) + (a.per_pax ? '/pax' : '') : '', m.km ? `${m.km} km` : ''].filter(Boolean).join(' · ');
   }
   function moveMapEl(r) {
@@ -562,7 +563,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   }
   function ticket(m) {
     const d = el('details', { class: 'ticket' }); d.open = !tripOver;
-    d.append(el('summary', {}, el('span', { class: 'tk-k', text: phone() ? m.time : `Getting here · ${m.time}` }), el('span', { class: 'tk-s', text: moveSummary(m) })));
+    d.append(el('summary', {}, el('span', { class: 'tk-k', text: phoneBook ? m.time : `Getting here · ${m.time}` }), el('span', { class: 'tk-s', text: moveSummary(m) })));
     const b = el('div', { class: 'tk-body' });
     if (m.stations && m.stations.length) b.append(lineStrip(m));
     if (m.walk_km >= 0.3) b.append(el('div', { class: 'tk-walk', text: `🚶 about ${m.walk_km} km on foot` }));
@@ -828,7 +829,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     const popped = new Set(); // one photo per stop, even when it has two pins (in by one gate, out by another)
     // Where each photo goes: above, below or beside its pin, whichever spot stays inside the map and covers
     // the fewest photos and pins already placed (stops bunched on one side of the map used to pile up).
-    const boxW = phone() ? $('#stack').clientWidth - 42 : 2 * ($('#stack').clientWidth - 64);
+    const boxW = phoneBook ? $('#stack').clientWidth - (wide() ? 64 : 42) : 2 * ($('#stack').clientWidth - 64);
     const popW = Math.min(96, Math.max(50, 0.095 * boxW)), fw = popW / boxW, fh = (popW + 22) / (boxW * m.height / m.width), g = 18 / (boxW * m.height / m.width);
     const spots = [['up', '-50%', -0.5], ['down', '-50%', -0.5], ['up', '-15%', -0.15], ['up', '-85%', -0.85], ['down', '-15%', -0.15], ['down', '-85%', -0.85], ['side', '12px', 0], ['side', 'calc(-100% - 12px)', -1]];
     const placed = [], pinPts = (m.pins || []).map((q) => [q.px[0] / m.width, q.px[1] / m.height]);
@@ -908,7 +909,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       if (r.about) li.append(el('p', { class: 'about', text: r.about }));
       if (r.details) {
         const food = /^(早餐|午餐|晚餐|Breakfast|Lunch|Dinner)|\n(早餐|午餐|晚餐)/.test(r.details);
-        li.append(unfold(el('details', { class: 'tt-more' }, el('summary', phone() ? { 'aria-label': food ? 'Food list and notes' : 'Details' } : { text: food ? '🍜 Food list & notes' : 'ℹ️ Details' }), el('pre', { class: 'details', text: r.details })), `${di}:${ri}:d`));
+        li.append(unfold(el('details', { class: 'tt-more' }, el('summary', phoneBook ? { 'aria-label': food ? 'Food list and notes' : 'Details' } : { text: food ? '🍜 Food list & notes' : 'ℹ️ Details' }), el('pre', { class: 'details', text: r.details })), `${di}:${ri}:d`));
       }
       ol.append(li);
     });
@@ -937,7 +938,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     }
     s.append(box, getAround(transportTotals(d.rows), 'Getting around today'));
     const main = d.maps.length ? d.maps.reduce((a, b) => ((b.pins || []).length > (a.pins || []).length ? b : a)) : null, others = d.maps.filter((m) => m !== main);
-    if (others.length && !phone()) s.append(el('div', { class: 'minimaps' }, el('div', { class: 'h', text: 'Also today' }), ...others.map((m) => mapBox(m, { onPin: tapPin(di) }).box)));
+    if (others.length && !phoneBook) s.append(el('div', { class: 'minimaps' }, el('div', { class: 'h', text: 'Also today' }), ...others.map((m) => mapBox(m, { onPin: tapPin(di) }).box)));
     return s;
   }
   function endPage() { const s = el('div', { class: 'scroll' }); s.append(el('div', { class: 'ornament' }), el('p', { class: 'kicker endnote', text: '— the end —' })); return s; }
@@ -1034,7 +1035,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     return s;
   }
   const build = (p) => p.kind === 'contents' ? contentsPage() : p.kind === 'stays' ? staysPage() : p.kind === 'bookit' ? bookItContent() : p.kind === 'end' ? endPage()
-    : p.kind === 'blank' ? el('div', { class: 'scroll' }) : p.kind === 'map' ? (phone() ? phoneMapPage(p.di) : mapPage(p.di, p.half)) : p.kind === 'timetable' ? timetablePage(p.di) : ticketsPage(p.di);
+    : p.kind === 'blank' ? el('div', { class: 'scroll' }) : p.kind === 'map' ? (phoneBook ? phoneMapPage(p.di) : mapPage(p.di, p.half)) : p.kind === 'timetable' ? timetablePage(p.di) : ticketsPage(p.di);
 
   // ---------- fitting pages ----------
   // Pages never scroll (user, 2026-10-06: easy to miss things at the bottom). A page's blocks are its top-level
@@ -1055,7 +1056,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   // Split one page's content into parts that fit, by adding blocks to an invisible page until one overflows.
   function split(p) {
     const full = build(p);
-    if ((p.kind === 'map' && !phone()) || p.kind === 'blank' || p.kind === 'end') return [{ idx: null }];
+    if ((p.kind === 'map' && !phoneBook) || p.kind === 'blank' || p.kind === 'end') return [{ idx: null }];
     if (p.kind === 'timetable' && TRIP.scroll_timetable) return [{ idx: null, tall: true, keys: [] }]; // one page per day that scrolls (user's choice for this trip)
     const us = units(full), probe = el('article', { class: 'page probe', 'aria-hidden': 'true' });
     $('#stack').append(probe);
@@ -1079,7 +1080,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   // Lay out the whole book for the current size; on wide screens every day's map spread starts on a left page.
   function layout() {
     const logical = [{ kind: 'contents' }, { kind: 'stays' }];
-    TRIP.days.forEach((d, di) => logical.push(...(phone() ? [{ kind: 'map', di, half: 0 }] : [{ kind: 'map', di, half: 0 }, { kind: 'map', di, half: 1 }]), { kind: 'timetable', di }, ...(TRIP.tickets === false ? [] : [{ kind: 'tickets', di }])));
+    TRIP.days.forEach((d, di) => logical.push(...(phoneBook ? [{ kind: 'map', di, half: 0 }] : [{ kind: 'map', di, half: 0 }, { kind: 'map', di, half: 1 }]), { kind: 'timetable', di }, ...(TRIP.tickets === false ? [] : [{ kind: 'tickets', di }])));
     if ((TRIP.book_it || []).length) logical.push({ kind: 'bookit' }, { kind: 'end' });
     const out = []; dayStart = []; bookItPage = -1;
     for (const p of logical) {
