@@ -127,7 +127,8 @@ const DATA = {"title":"Travel Bookcase · 旅行书架","books":[{"title":"重�
       const s = el('button', { class: cls, type: 'button', role: 'listitem', 'aria-expanded': 'false', 'aria-controls': 'panel', 'aria-label': `${b.title}, ${when(b)}${b.book ? '' : ` (${b.note || 'no book yet'})`}`, style: `--cloth:${b.cloth};--h:${h}px;--w:${w}px` },
         b.status === 'upcoming' ? el('span', { class: 'ribbon', 'aria-hidden': 'true' }) : null,
         el('span', { class: 't', text: b.title.replace(/\s*\d{4}$/, '') }), el('span', { class: 'y', text: (b.from || '').slice(0, 4) }));
-      s.addEventListener('click', () => pick(b, s));
+      // a book opens straight at its cover, and the cover at the contents (user, 2026-10-07); a shelf entry without a book shows its panel
+      s.addEventListener('click', () => { if (b.book) location.href = `${b.book}#cover`; else pick(b, s); });
       shelf.append(s);
     });
     if (si === shelves.length - 1) shelf.append(el('span', { class: 'bookend', 'aria-hidden': 'true' }));

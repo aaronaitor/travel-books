@@ -42,7 +42,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
 [hidden]{display:none!important}
 
 /* ---------- cover ---------- */
-.cover-scene{position:fixed;inset:0;display:grid;place-items:center;perspective:1800px;padding:20px}
+.cover-scene{position:fixed;inset:0;display:grid;place-items:center;perspective:1800px;padding:20px;cursor:pointer}
 .cover{position:relative;width:min(86vw,420px);aspect-ratio:3/4.3;max-height:88dvh;transform-origin:left center;transform-style:preserve-3d;transition:transform 1.1s cubic-bezier(.3,.05,.2,1),opacity .4s 1s}
 .cover .board{position:absolute;inset:0;border-radius:6px 14px 14px 6px;overflow:hidden;
   background:repeating-linear-gradient(45deg,rgba(255,255,255,.035) 0 2px,transparent 2px 5px),repeating-linear-gradient(-45deg,rgba(0,0,0,.05) 0 2px,transparent 2px 5px),linear-gradient(160deg,var(--cloth) 0%,var(--cloth-2) 100%);
@@ -66,8 +66,6 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
 .cover .label:has(img) .art{aspect-ratio:3/4}
 .cover .cnote{font:600 17px/1.3 var(--hand);opacity:.9}
 .cover .cnote:empty{display:none}
-.cover .open{font:600 15px var(--sans);letter-spacing:.04em;background:linear-gradient(180deg,var(--gold-1),var(--gold-2));color:#2A1D08;border:0;border-radius:999px;padding:11px 22px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.3)}
-.cover .meta{font:12px var(--mono);opacity:.75}
 .cover-scene.opening .cover{transform:rotateY(-165deg);opacity:0}
 
 /* ---------- reader: book, pages, thumb index ---------- */
@@ -411,8 +409,6 @@ body.phone .hotel{font-size:14px}
       </div>
       <div class="label" id="cLabel" aria-hidden="true"></div>
       <div class="cnote" id="cNote"></div>
-      <button type="button" class="open" id="openBook">Open the book →</button>
-      <div class="meta" id="cMeta"></div>
     </div>
   </div>
 </div>
@@ -469,7 +465,6 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   if (cv.from) { const a = fmt(cv.from), b = fmt(cv.to); $('#cWhen').textContent = a.m === b.m && a.y === b.y ? `${a.d} – ${b.d} ${b.m} ${b.y}` : `${a.d} ${a.m} – ${b.d} ${b.m} ${b.y}`; }
   $('#cWhere').textContent = (cv.where || cv.cities || []).join(' · ');
   $('#cNote').textContent = cv.note || '';
-  $('#cMeta').textContent = `${cv.days || TRIP.days.length} days${cv.pax ? ` · ${cv.pax} people` : ''}`;
   const arts = (cv.art || []).filter((k) => TRIP.art && TRIP.art[k]);
   if ((cv.photos || []).length) { $('#cLabel').style.setProperty('--n', cv.photos.length); for (const p of cv.photos) $('#cLabel').append(el('div', { class: 'art' }, el('img', { src: p, alt: '' }))); } // a finished trip: the user's own photos
   else if (arts.length) { $('#cLabel').style.setProperty('--n', arts.length); for (const k of arts) { const a = el('div', { class: 'art' }); a.innerHTML = TRIP.art[k]; $('#cLabel').append(a); } } else $('#cLabel').hidden = true;
@@ -1238,7 +1233,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     if (!$('#photoView').hidden) { if (e.key === 'Escape') closeOverlays(); return; }
     if (!$('#stopView').hidden) { if (e.key === 'Escape') closeStop(); return; }
     if (!$('#driver').hidden) { if (e.key === 'Escape') $('#driver').hidden = true; return; }
-    if ($('#reader').hidden) { if (e.key === 'Enter' || e.key === 'ArrowRight') openBook(); return; }
+    if ($('#reader').hidden) { if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); fromCover(); } return; }
     if (e.key === 'ArrowRight' || e.key === 'PageDown') turnTo(cur + step());
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') turnTo(cur - step());
   });
@@ -1301,15 +1296,18 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     scene.classList.add('opening');
     setTimeout(reveal, 1150);
   }
-  function closeBook() { $('#coverScene').classList.remove('opening'); $('#coverScene').hidden = false; $('#reader').hidden = true; $('#bar').hidden = true; store.set('opened', false); $('#openBook').focus(); }
-  $('#openBook').addEventListener('click', () => openBook());
+  function closeBook() { $('#coverScene').classList.remove('opening'); $('#coverScene').hidden = false; $('#reader').hidden = true; $('#bar').hidden = true; store.set('opened', false); $('#coverScene').focus(); }
+  // the cover itself opens the book, at the contents (no button)
+  const fromCover = () => { cur = 0; openBook(); };
+  $('#coverScene').setAttribute('role', 'button'); $('#coverScene').setAttribute('tabindex', '0'); $('#coverScene').setAttribute('aria-label', `Open ${TRIP.title} at the contents`);
+  $('#coverScene').addEventListener('click', fromCover);
   // swipe left on the cover opens it too
   let cx0 = null;
   $('#coverScene').addEventListener('pointerdown', (e) => { cx0 = e.clientX; });
-  $('#coverScene').addEventListener('pointerup', (e) => { if (cx0 !== null && cx0 - e.clientX > 60) openBook(); cx0 = null; });
+  $('#coverScene').addEventListener('pointerup', (e) => { if (cx0 !== null && cx0 - e.clientX > 60) fromCover(); cx0 = null; });
   // a new size re-fits every page (debounced); late-loading fonts change line heights too
   let rt; const refit = (force) => { clearTimeout(rt); rt = setTimeout(() => { if (!$('#reader').hidden && !busy && (force === true || sizeKey() !== laidOut)) relayout(); }, 200); };
   new ResizeObserver(refit).observe($('#stack')); window.addEventListener('resize', refit); document.addEventListener('visibilitychange', refit); document.fonts && document.fonts.ready.then(() => refit(true));
-  if (store.get('opened')) openBook(true);
+  if (location.hash !== '#cover' && store.get('opened')) openBook(true); // from the bookcase shelf (#cover): always the cover first
 })();
 </script>
