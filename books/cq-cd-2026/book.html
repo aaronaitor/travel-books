@@ -147,12 +147,16 @@ body.phone .phonemap{gap:10px}
 body.foldmode .left-leaf,body.foldmode .stack{display:none}
 .fold{flex:1;height:100%;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;padding:26px 6px 30px;position:relative}
 .fold .panel{max-width:860px;margin:0 auto;position:relative;padding:24px 22px 26px;
-  background:linear-gradient(90deg,transparent calc(33.3% - 1px),rgba(0,0,0,.05) calc(33.3% - 1px),rgba(255,255,255,.5) 33.3%,transparent calc(33.3% + 2px)),
-    linear-gradient(90deg,transparent calc(66.6% - 1px),rgba(0,0,0,.05) calc(66.6% - 1px),rgba(255,255,255,.5) 66.6%,transparent calc(66.6% + 2px)),
-    linear-gradient(180deg,rgba(0,0,0,.08),transparent 22px),#F4EEDC;
+  background:
+    linear-gradient(90deg,transparent calc(33.3% - 10px),rgba(0,0,0,.07) calc(33.3% - 1px),rgba(255,255,255,.75) 33.3%,rgba(255,255,255,0) calc(33.3% + 10px)),
+    linear-gradient(90deg,transparent calc(66.6% - 10px),rgba(255,255,255,.6) calc(66.6% - 1px),rgba(0,0,0,.09) 66.6%,rgba(0,0,0,0) calc(66.6% + 10px)),
+    repeating-linear-gradient(180deg,transparent 0 548px,rgba(0,0,0,.08) 556px,rgba(255,255,255,.7) 560px,transparent 572px),
+    linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.04) 10px,transparent 28px),#F4EEDC;
   box-shadow:0 12px 24px rgba(0,0,0,.14);transform-origin:50% 0;transform:perspective(1100px) rotateX(-58deg);opacity:.35;
   transition:transform .75s cubic-bezier(.25,1.15,.4,1),opacity .5s}
 .fold .panel.odd{background-color:#EFE8D4}
+.fold .panel + .panel::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,rgba(0,0,0,.18),rgba(0,0,0,.1),rgba(0,0,0,.18));pointer-events:none}
+.fold .panel .mapbox.ov{margin-bottom:16px}
 .fold .panel:first-of-type{border-radius:6px 6px 0 0}
 .fold .panel:last-of-type{border-radius:0 0 6px 6px}
 .fold .panel.open{transform:none;opacity:1}
@@ -161,12 +165,35 @@ body.foldmode .left-leaf,body.foldmode .stack{display:none}
 .fold .panel .pageno{display:none}
 .fold .daypanel{display:grid;gap:22px}
 @media (min-width:980px){ .fold .daypanel{grid-template-columns:1fr 1fr;align-items:start} }
-.fold .panel.wallet{background:repeating-linear-gradient(45deg,rgba(0,0,0,.025) 0 2px,transparent 2px 6px),linear-gradient(180deg,rgba(0,0,0,.08),transparent 22px),linear-gradient(180deg,#D8B88A,#CDA977)}
+.fold .panel.wallet{background:
+    linear-gradient(90deg,transparent calc(33.3% - 10px),rgba(0,0,0,.08) calc(33.3% - 1px),rgba(255,255,255,.35) 33.3%,rgba(255,255,255,0) calc(33.3% + 10px)),
+    linear-gradient(90deg,transparent calc(66.6% - 10px),rgba(255,255,255,.3) calc(66.6% - 1px),rgba(0,0,0,.1) 66.6%,rgba(0,0,0,0) calc(66.6% + 10px)),
+    repeating-linear-gradient(45deg,rgba(0,0,0,.025) 0 2px,transparent 2px 6px),linear-gradient(180deg,rgba(0,0,0,.16),transparent 28px),linear-gradient(180deg,#D8B88A,#CDA977)}
 .fold .panel.wallet .chapter,.fold .panel.wallet .kicker{color:#4A3420}
 .fold .pcard{position:absolute;top:14px;right:16px;width:min(38%,230px);margin:0;padding:8px 8px 34px;background:#FFFEFA;box-shadow:0 8px 16px rgba(0,0,0,.25);transform:rotate(4deg);z-index:3}
 .fold .pcard img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
 .fold .pcard figcaption{position:absolute;left:10px;right:10px;bottom:8px;font:700 18px/1 var(--hand);color:#3A332B;text-align:center}
-.foldmag{position:sticky;top:-18px;display:block;width:76px;margin:-12px auto -46px;z-index:8;transform:rotate(-6deg);filter:drop-shadow(0 6px 5px rgba(0,0,0,.35));pointer-events:none}
+.foldmag{all:unset;box-sizing:border-box;position:sticky;top:-14px;display:block;width:76px;margin:-12px auto -64px;z-index:8;transform:rotate(-6deg);filter:drop-shadow(0 6px 5px rgba(0,0,0,.35));cursor:pointer;transition:transform .2s}
+.foldmag:hover,.foldmag:focus-visible{transform:rotate(-6deg) translateY(-3px) scale(1.05)}
+.foldmag:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:14px}
+.foldmag .tagt{position:absolute;left:50%;top:92%;transform:translateX(-50%) rotate(8deg);background:#FFF3A8;color:#3A3220;font:700 15px/1 var(--hand);padding:5px 9px 4px;white-space:nowrap;box-shadow:0 3px 5px rgba(0,0,0,.2)}
+.tpop{position:fixed;inset:0;z-index:60;background:rgba(20,15,10,.45);display:flex;justify-content:center;align-items:flex-start;padding:max(70px,env(safe-area-inset-top)) 12px 20px;animation:tfade .25s both}
+.tpop[hidden]{display:none}
+@keyframes tfade{from{background:rgba(20,15,10,0)}}
+.tpop .twrap{position:relative;width:min(560px,100%);transform-origin:50% 0;animation:tpop .45s cubic-bezier(.3,1.35,.5,1) both}
+.tpop .twallet{position:relative;width:100%;max-height:calc(100dvh - 100px);overflow-y:auto;overscroll-behavior:contain;border-radius:14px;padding:46px 18px 22px;
+  background:repeating-linear-gradient(45deg,rgba(0,0,0,.025) 0 2px,transparent 2px 6px),linear-gradient(180deg,#D8B88A,#CDA977);box-shadow:0 24px 50px rgba(0,0,0,.45);
+}
+@keyframes tpop{from{transform:translateY(-60px) scale(.35);opacity:0}}
+.tpop .twallet .chapter,.tpop .twallet .kicker{color:#4A3420}
+.tpop .twallet .scroll{position:static;overflow:visible;padding:0;inset:auto}
+.tpop .tmag{position:absolute;top:-38px;left:50%;width:70px;z-index:2;transform:translateX(-50%) rotate(-6deg);filter:drop-shadow(0 6px 5px rgba(0,0,0,.35))}
+.tpop .tmag svg{display:block;width:100%;height:auto}
+.tpop .tclose{position:absolute;top:10px;right:10px;border:0;background:rgba(255,255,255,.6);border-radius:999px;width:34px;height:34px;font:700 16px var(--sans);color:#4A3420;cursor:pointer}
+.tpop .wl > *{animation:tdrop .45s cubic-bezier(.3,1.3,.5,1) both;animation-delay:calc(var(--i,0) * 60ms + 120ms)}
+@keyframes tdrop{from{transform:translateY(-24px);opacity:0}}
+@media (max-width:560px){ .stamp{font-size:12px;padding:2px 7px;right:98px;top:22%} .bp .route{font-size:24px} }
+@media (prefers-reduced-motion: reduce){ .tpop,.tpop .twrap,.tpop .wl > *{animation:none} }
 .foldmag svg{display:block;width:100%;height:auto}
 @media (max-width:979px){ .fold .pcard{width:30%;top:-4px;right:8px;padding:5px 5px 24px} .fold .pcard figcaption{font-size:14px;bottom:5px} }
 @media (prefers-reduced-motion: reduce){ .fold .panel{transform:none;opacity:1;transition:none} .fold{scroll-behavior:auto} }
@@ -1077,8 +1104,8 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       const list = dayTickets(di); if (!list.length) return;
       wl.append(el('div', { class: 'day', text: `Day ${di + 1} · ${d.short}` }));
       for (const t of list) {
-        const kind = (t.kind || 'TICKET').toUpperCase(), status = tripOver ? 'USED' : t.booked ? 'BOOKED' : (t.status || 'TO BOOK');
-        const stamp = tripOver ? el('span', { class: 'stamp used', text: 'USED' }) : t.booked ? el('span', { class: 'stamp', text: 'BOOKED' }) : null;
+        const kind = (t.kind || 'TICKET').toUpperCase(), status = t.booked || tripOver ? '' : (t.status || 'TO BOOK');
+        const stamp = t.booked ? el('span', { class: 'stamp', text: 'BOOKED' }) : null;
         const fare = ((t.what || '') + ' ' + (t.price || '')).match(/[\d.,]+\s*(myr|rmb|jpy|krw|hkd)[^·\s]*/i);
         if (kind === 'FLIGHT') {
           const codes = (t.name || '').match(/\b[A-Z]{3}\b/g) || [], from = codes[0] || '', to = codes[codes.length - 1] || '';
@@ -1086,11 +1113,11 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
           const main = el('div', { class: 'main' }, el('span', { class: 'air', text: air ? air[0] : 'Flight' }));
           const route = el('div', { class: 'route' }, from); route.insertAdjacentHTML('beforeend', PLANE); route.append(to);
           main.append(route, el('div', { class: 'meta' }, el('span', {}, 'Date', el('b', { text: d.short })), el('span', {}, 'Time', el('b', { text: t.time || '—' })), fare ? el('span', {}, 'Fare', el('b', { text: fare[0] })) : null));
-          wl.append(el('div', { class: 'bp' }, main, el('div', { class: 'stub' }, 'Boarding pass', el('b', { text: `${from}→${to}` }), stamp ? '' : status), stamp, tripOver ? el('span', { class: 'punch' }) : null));
+          wl.append(el('div', { class: 'bp' }, main, el('div', { class: 'stub' }, 'Boarding pass', el('b', { text: `${from}→${to}` }), status), stamp));
         } else {
           const main = el('div', { class: 'main' }, el('span', { class: 'kind', text: kind }), el('span', { class: 'name', text: t.name }), t.en ? el('span', { class: 'en', text: t.en }) : null,
             el('div', { class: 'meta' }, el('span', {}, 'Time', el('b', { text: t.time || '—' })), t.price || fare ? el('span', {}, 'Price', el('b', { text: t.price || fare[0] })) : null, t.book ? el('span', {}, 'Book', el('b', { text: t.book })) : null));
-          wl.append(el('div', { class: 'tk', style: `--tc:${KIND_C[kind] || '#0E6B66'}` }, el('div', { class: 'band' }), main, el('div', { class: 'stub' }, stamp ? 'Admit one' : status), stamp, tripOver ? el('span', { class: 'punch' }) : null));
+          wl.append(el('div', { class: 'tk', style: `--tc:${KIND_C[kind] || '#0E6B66'}` }, el('div', { class: 'band' }), main, el('div', { class: 'stub' }, status || 'Admit one'), stamp));
         }
       }
     });
@@ -1141,7 +1168,8 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
 
   function contentsPage() {
     const s = el('div', { class: 'scroll' });
-    s.append(el('div', { class: 'kicker', text: '目录 · Contents' }), el('h2', { class: 'chapter', text: TRIP.title }), el('div', { class: 'ornament' }));
+    if (!foldMode) s.append(el('div', { class: 'kicker', text: '目录 · Contents' }));
+    s.append(el('h2', { class: 'chapter', text: TRIP.title }), el('div', { class: 'ornament' }));
     for (const m of TRIP.overview || []) {
       const { box, svg } = mapBox({ ...m, pins: [], moves: [] }, { overview: true });
       const placed = [];
@@ -1349,7 +1377,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   if (phoneBook) tab('冰箱', 'Back to the fridge', 'plain', () => { location.href = (TRIP.links && TRIP.links.bookcase) || '../../index.html'; });
   else tab('封面', 'Back to the cover', 'plain', () => closeBook());
   const tocTab = tab(phoneBook ? '地图' : '目录', 'Contents', 'plain', () => (foldMode ? goSec('contents') : turnTo(0, { jump: true })));
-  const walletTab = phoneBook ? tab('票', 'Tickets', 'plain', () => (foldMode ? goSec('wallet') : turnTo(1, { jump: true }))) : null;
+  const walletTab = phoneBook ? tab('票', 'Tickets', 'plain', () => (foldMode ? openTickets() : turnTo(1, { jump: true }))) : null;
   const stayTab = TRIP.hotels_page === false ? el('span') : tab('住', 'Hotels', 'plain', () => turnTo(1, { jump: true }));
   const dayTabs = TRIP.days.map((d, i) => tab(`D${i + 1}`, `Day ${i + 1} · ${d.short}`, `m${i % 5}`, () => goDay(i)));
   const bookTab = (TRIP.book_it || []).length ? tab('订', 'Book it', 'plain', () => turnTo(bookItPage, { jump: true })) : null;
@@ -1497,13 +1525,29 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     if (src) { const city = (TRIP.days[di].title.split(' · ')[2] || '').split(' → ').pop(); left.prepend(el('figure', { class: 'pcard' }, el('img', { src, alt: '' }), el('figcaption', { text: `第${di + 1}天 · ${city || TRIP.days[di].short}` }))); }
     return wrap;
   }
+  // The tickets live behind the magnet: tapping it pops the wallet out (user, 2026-10-09).
+  function openTickets() {
+    let pop = $('#ticketPop');
+    if (!pop) {
+      const wallet = walletPage(); wallet.querySelectorAll('.wl > *').forEach((n, i) => n.style.setProperty('--i', i));
+      const close = el('button', { type: 'button', class: 'tclose', 'aria-label': 'Put the tickets away', text: '✕' });
+      pop = el('div', { class: 'tpop', id: 'ticketPop', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Tickets' },
+        el('div', { class: 'twrap' }, el('div', { class: 'tmag', 'aria-hidden': 'true', html: magnetSvg() }), el('div', { class: 'twallet' }, close, wallet)));
+      pop.addEventListener('click', (e) => { if (e.target === pop) closeTickets(); });
+      close.addEventListener('click', closeTickets);
+      document.body.append(pop);
+    }
+    pop.hidden = false; lastFocus = document.activeElement; pop.querySelector('.tclose').focus();
+  }
+  function closeTickets() { const pop = $('#ticketPop'); if (pop) pop.remove(); if (lastFocus && lastFocus.isConnected) lastFocus.focus(); }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#ticketPop')) closeTickets(); });
   function foldStep(dir) { const i = Math.max(0, Math.min(secs.length - 1, secAt + dir)); secs[i] && secs[i].el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); }
   function openFold() {
     document.body.classList.add('foldmode');
     $('#coverScene').hidden = true; $('#reader').hidden = false; $('#bar').hidden = false;
     const fold = $('#fold'); fold.hidden = false;
-    if (TRIP.cover && TRIP.cover.magnet) fold.append(el('div', { class: 'foldmag', 'aria-hidden': 'true', html: magnetSvg() }));
-    secs = [{ id: 'contents', label: ['地图', 'Map'], node: contentsPage(), tab: tocTab }, { id: 'wallet', label: ['票', 'Tickets'], node: walletPage(), tab: walletTab, cls: 'wallet' },
+    if (TRIP.cover && TRIP.cover.magnet) { const m = el('button', { type: 'button', class: 'foldmag', 'aria-label': 'Tickets', html: magnetSvg() }); m.append(el('span', { class: 'tagt', text: '票 Tickets' })); m.addEventListener('click', openTickets); fold.append(m); }
+    secs = [{ id: 'contents', label: ['地图', 'Map'], node: contentsPage(), tab: tocTab },
       ...TRIP.days.map((d, di) => ({ id: `day-${di}`, label: [`D${di + 1}`, `Day ${di + 1} · ${d.short}`], node: dayPanel(di), tab: dayTabs[di] }))];
     secs.forEach((x, i) => { x.el = el('section', { class: `panel ${x.cls || ''}${i % 2 ? ' odd' : ''}`, id: `sec-${x.id}`, 'aria-label': x.label[1] }, x.node); fold.append(x.el); });
     updatePops();
@@ -1521,6 +1565,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     };
     fold.addEventListener('scroll', () => requestAnimationFrame(track), { passive: true });
     track();
+    if (location.hash === '#tickets') openTickets(); // a link straight to the tickets
   }
   if (foldMode) openFold(); else if (location.hash !== '#cover' && store.get('opened')) openBook(true); // from the bookcase shelf (#cover): always the cover first
 })();
