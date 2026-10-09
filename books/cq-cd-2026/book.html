@@ -283,8 +283,24 @@ body.phone .page.postcard{background:#FBF7EE}
 .jrt .jr{display:flex;align-items:center;justify-content:center;gap:14px;margin:8px 0 4px;font:700 26px var(--zh)} .jrt .jr span{font-size:20px;color:#2E7D4F}
 .jrt .jl{display:flex;justify-content:space-between;gap:10px;font:600 14px var(--zh);margin:2px 0} .jrt .jp{font:700 17px var(--mono)} .jrt .js{font:12px var(--mono);color:#4C6E57}
 /* admission stub */
-.tk .stub .ao{font:800 12px var(--sans);letter-spacing:.14em;writing-mode:vertical-rl;transform:rotate(180deg);color:#2A2521}
-.tk .stub .sn{font:11px var(--mono);color:#8a7a62}
+.stamps{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.stk{position:relative;width:168px;color:#2A2521;flex:none}
+.stk .in{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;padding:12px 10px}
+.stk.square{background:#FFFEFA;padding:7px;filter:drop-shadow(0 3px 5px rgba(60,40,20,.3));
+  -webkit-mask:radial-gradient(circle 4px,transparent 96%,#000) -5.5px -5.5px/11px 11px round,linear-gradient(#000 0 0) content-box;-webkit-mask-composite:source-over;
+  mask:radial-gradient(circle 4px,transparent 96%,#000) -5.5px -5.5px/11px 11px round,linear-gradient(#000 0 0) content-box;mask-composite:add}
+.stk.square .in{min-height:150px;border:2px solid var(--tc);background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--tc) 7%,transparent) 0 6px,transparent 6px 12px)}
+.stk.round{width:170px;height:170px;border-radius:50%;background:#FFFEFA;box-shadow:0 3px 8px rgba(60,40,20,.3);display:grid;place-items:center;padding:7px}
+.stk.round .in{width:100%;height:100%;border-radius:50%;border:2px dashed var(--tc);outline:3px double var(--tc);outline-offset:-9px;padding:18px}
+.stk .k{font:800 10px var(--sans);letter-spacing:.14em;color:var(--tc)}
+.stk .n{font:700 14px/1.2 var(--zh);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.stk .e{font:11px/1.2 var(--sans);color:#6F665B;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.stk .w{font:600 11px var(--mono);color:#4A3420}
+.stk .p{font:800 13px var(--mono)}
+.stk .s{font:700 9px var(--sans);letter-spacing:.1em;color:#8a7a62;text-transform:uppercase}
+.stk .stamp{right:auto;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-16deg);font-size:13px;padding:2px 8px}
+.tpop .wl .stk{transform:rotate(var(--rot,0deg))}
+@media (max-width:420px){ .stk{width:calc(50% - 8px)} .stk.round{width:calc(50% - 8px);height:auto;aspect-ratio:1} }
 @media (max-width:560px){ .bpass{grid-template-columns:1fr} .bpass .bps{display:none} .bpass::before,.bpass::after{display:none} .bpass .bpg{grid-template-columns:repeat(3,1fr)} .bpass .ap b{font-size:28px} }
 .stamp{position:absolute;right:104px;top:50%;transform:translateY(-50%) rotate(-14deg);border:3px solid #C8372A;color:#C8372A;border-radius:6px;padding:3px 10px;
   font:900 17px/1 var(--sans);letter-spacing:.14em;opacity:.82;pointer-events:none;mix-blend-mode:multiply}
@@ -1143,7 +1159,8 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   // Tickets drawn like the real things (user, 2026-10-09): an airline boarding pass, a blue 中国铁路 ticket,
   // a JR 乗車券, and an admission stub for everything else.
   const CITY = { KUL: 'Kuala Lumpur', SZX: 'Shenzhen', CAN: 'Guangzhou', NRT: 'Tokyo Narita', HND: 'Tokyo Haneda', CKG: 'Chongqing', CTU: 'Chengdu', TFU: 'Chengdu Tianfu', NNG: 'Nanning', HKG: 'Hong Kong', PEK: 'Beijing', PVG: 'Shanghai' };
-  const AIR_C = { 'Vietnam Airlines': '#00596B', 'China Southern': '#2A5CAA', '南方航空': '#2A5CAA', AirAsia: '#D7262B', 'Malaysia Airlines': '#0B2A5A', 'Cathay Pacific': '#00645A' };
+  // One boarding-pass template: an airline only changes its name and colour (add one here to restyle its passes).
+  const AIR_C = { 'Vietnam Airlines': '#00596B', 'China Southern': '#2A5CAA', '南方航空': '#2A5CAA', AirAsia: '#D7262B', 'Malaysia Airlines': '#0B2A5A', 'Cathay Pacific': '#00645A', 'Japan Airlines': '#C8102E', ANA: '#13448F', 'Batik Air': '#7A1F3D', Scoot: '#F5B500' };
   const svgOf = (w, h, body) => `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">${body}</svg>`;
   const barcode = (seed) => { const r = rand(seed * 31 + 7); let x = 0, b = ''; while (x < 118) { const w = 1 + Math.floor(r() * 3); if (r() > 0.42) b += `<rect x="${x}" y="0" width="${w}" height="40" fill="#1b1b1b"/>`; x += w + 1; } return svgOf(120, 40, b); };
   const qr = (seed) => { const r = rand(seed * 17 + 3), n = 21; let b = ''; const fin = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7" fill="#1b1b1b"/><rect x="${x + 1}" y="${y + 1}" width="5" height="5" fill="#fff"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3" fill="#1b1b1b"/>`;
@@ -1154,7 +1171,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   const times = (t) => (t.time || '').split(/\s*[-–]\s*/);
   function boardingPass(t, d, di, fare, status, stamp) {
     const codes = (t.name || '').match(/\b[A-Z]{3}\b/g) || [], from = codes[0] || '', to = codes[codes.length - 1] || '';
-    const airM = ((t.name || '') + ' ' + (t.what || '')).match(/Vietnam Airlines|China Southern|AirAsia|Malaysia Airlines|Cathay Pacific|[\u4e00-\u9fa5]{2,4}航空/), air = airM ? airM[0] : 'Airline';
+    const txt = (t.name || '') + ' ' + (t.what || ''), air = Object.keys(AIR_C).find((k) => txt.includes(k)) || (txt.match(/[\u4e00-\u9fa5]{2,4}航空/) || ['Airline'])[0];
     const fno = (t.what || '').match(/\b(?:[A-Z]{2}|[A-Z]\d|\d[A-Z])\d{2,4}\b/), [dep, arr] = times(t), dt = fmt(d.date);
     const cell = (k, v) => el('div', { class: 'f' }, el('span', { text: k }), el('b', { text: v || '—' }));
     const plane = el('span', { class: 'pl' }); plane.innerHTML = PLANE;
@@ -1191,11 +1208,15 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       el('div', { class: 'jl' }, el('span', { text: `${mo}月${da}日 ${dep || ''}発` }), el('span', { text: train ? `${train[0]} 号` : '' }), el('span', { text: '指定席' })),
       el('div', { class: 'jl' }, el('span', { class: 'jp', text: price }), el('span', { text: status || '' }), el('span', { class: 'js', text: `No.${String(serial(t, d)).slice(-5)}` })), stamp);
   }
-  function admitTicket(t, d, kind, fare, status, stamp) {
-    const main = el('div', { class: 'main' }, el('span', { class: 'kind', text: kind }), el('span', { class: 'name', text: t.name }), t.en ? el('span', { class: 'en', text: t.en }) : null,
-      el('div', { class: 'meta' }, el('span', {}, 'Date', el('b', { text: d.short })), el('span', {}, 'Time', el('b', { text: t.time || '—' })), t.price || fare ? el('span', {}, 'Price', el('b', { text: t.price || fare[0] })) : null, t.book ? el('span', {}, 'Book', el('b', { text: t.book })) : null));
-    return el('div', { class: 'tk', style: `--tc:${KIND_C[kind] || '#0E6B66'}` }, el('div', { class: 'band' }), main,
-      el('div', { class: 'stub' }, el('span', { class: 'ao', text: 'ADMIT ONE' }), el('span', { class: 'sn', text: `Nº ${String(serial(t, d)).padStart(6, '0').slice(-6)}` }), status ? el('span', { text: status }) : null), stamp);
+  // Tickets with no real-life template are little stamps side by side: square with perforated edges for rides,
+  // round for places (user, 2026-10-09).
+  const stampRow = (wl) => { const last = wl.lastElementChild; if (last && last.classList.contains('stamps')) return last; const r = el('div', { class: 'stamps' }); wl.append(r); return r; };
+  function stampTicket(t, d, kind, fare, status, stamp) {
+    const round = !/TRAIN|BUS|ROPEWAY|CAR|FERRY|SHUTTLE/.test(kind);
+    return el('div', { class: `stk ${round ? 'round' : 'square'}`, style: `--tc:${KIND_C[kind] || '#0E6B66'}` },
+      el('div', { class: 'in' }, el('span', { class: 'k', text: kind }), el('b', { class: 'n', text: t.name }), t.en ? el('span', { class: 'e', text: t.en }) : null,
+        el('span', { class: 'w', text: [d.short, t.time].filter(Boolean).join(' · ') }), t.price || fare ? el('span', { class: 'p', text: t.price || fare[0] }) : null,
+        status ? el('span', { class: 's', text: status }) : null), stamp);
   }
   function walletPage() {
     const s = el('div', { class: 'scroll' });
@@ -1211,9 +1232,11 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
         if (kind === 'FLIGHT') wl.append(boardingPass(t, d, di, fare, status, stamp));
         else if (/TRAIN|SHINKANSEN/.test(kind)) { // the ticket of the country it runs in: JR in Japan, 中国铁路 in China, a plain rail ticket elsewhere
           const money = ((t.price || '') + ' ' + (fare ? fare[0] : '')).toLowerCase();
-          wl.append(/jpy/.test(money) || kind === 'SHINKANSEN' ? jrTicket(t, d, fare, status, stamp) : /rmb/.test(money) ? railTicket(t, d, fare, status, stamp) : admitTicket(t, d, 'TRAIN', fare, status, stamp));
+          if (/jpy/.test(money) || kind === 'SHINKANSEN') wl.append(jrTicket(t, d, fare, status, stamp));
+          else if (/rmb/.test(money)) wl.append(railTicket(t, d, fare, status, stamp));
+          else stampRow(wl).append(stampTicket(t, d, 'TRAIN', fare, status, stamp));
         }
-        else wl.append(admitTicket(t, d, kind, fare, status, stamp));
+        else stampRow(wl).append(stampTicket(t, d, kind, fare, status, stamp));
       }
     });
     if (!wl.children.length) wl.append(el('p', { class: 'hotel', text: 'No tickets for this trip.' }));
@@ -1245,7 +1268,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       const ph = el('div', { class: 'ph' });
       if (b.img) ph.append(el('img', { src: b.img, alt: '', loading: 'lazy' }));
       else if (b.art && TRIP.art && TRIP.art[b.art]) { const a = el('div', { class: 'art', 'aria-hidden': 'true' }); a.innerHTML = TRIP.art[b.art]; ph.append(a); }
-      ph.append(el('span', { class: 'tag', text: hotel ? 'HOTEL' : 'ADMIT ONE' }));
+      ph.append(el('span', { class: 'tag', text: hotel ? 'HOTEL' : 'TICKET' }));
       if (b.img_note) ph.append(el('span', { class: 'pn', text: b.img_note }));
       if (b.credit) credits.push(`${b.name}: ${b.credit}`);
       const t = el('a', { class: `bk ${hotel ? '' : 'ticket-k'}`, href: b.url, target: '_blank', rel: 'noopener', 'data-k': b.kind, 'aria-label': `Book ${b.name} on ${b.site}` }, ph,
@@ -1625,7 +1648,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     let pop = $('#ticketPop');
     if (!pop) {
       const wallet = walletPage(); // each ticket its own card, tumbling out of the magnet at a slight angle
-      wallet.querySelectorAll('.wl > *').forEach((n, i) => { n.style.setProperty('--i', i); n.style.setProperty('--rot', `${[-2, 1.5, -1, 2.5, -1.5, 1][i % 6]}deg`); });
+      wallet.querySelectorAll('.wl > *, .stamps > *').forEach((n, i) => { n.style.setProperty('--i', i); n.style.setProperty('--rot', `${[-2, 1.5, -1, 2.5, -1.5, 1][i % 6]}deg`); });
       const close = el('button', { type: 'button', class: 'tclose', 'aria-label': 'Put the tickets away', text: '✕' });
       pop = el('div', { class: 'tpop', id: 'ticketPop', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Tickets' },
         el('div', { class: 'twrap' }, el('div', { class: 'tmag', 'aria-hidden': 'true', html: magnetSvg() }), close, el('div', { class: 'twallet' }, wallet)));
