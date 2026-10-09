@@ -670,7 +670,10 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     $('#sheetBtn').hidden = false; $('#sheetBtn').firstChild.textContent = '📄'; $('#sheetBtn').lastChild.textContent = ' PDF'; $('#sheetBtn').setAttribute('aria-label', 'Download the itinerary PDF');
     $('#sheetBtn').addEventListener('click', () => { const a = el('a', { href: TRIP.links.sheet_pdf, download: (TRIP.links.sheet_name || `${TRIP.title}.xlsx`).replace(/\.xlsx$/, '.pdf') }); document.body.append(a); a.click(); a.remove(); });
   }
-  if (TRIP.links && TRIP.links.sheet) {
+  if (TRIP.links && TRIP.links.sheet_url) { // the trip's Google Sheet, opened in a new tab
+    $('#sheetBtn').hidden = false; $('#sheetBtn').setAttribute('aria-label', 'Open the Google Sheet');
+    $('#sheetBtn').addEventListener('click', () => window.open(TRIP.links.sheet_url, '_blank', 'noopener'));
+  } else if (TRIP.links && TRIP.links.sheet) {
     $('#sheetBtn').hidden = false;
     $('#sheetBtn').addEventListener('click', () => saveSheet(TRIP.links.sheet, TRIP.links.sheet_name || `${TRIP.title}.xlsx`, toast));
   }
