@@ -182,6 +182,9 @@ body.foldmode .left-leaf,body.foldmode .stack{display:none}
 .tstack:not(.open) .stk{width:168px;left:calc(var(--x) - 63px);transform:scale(.75) translateY(calc(-100% - 40px)) rotate(var(--rot,0deg))}
 .tstack:not(.open) .stk.round{width:170px}
 .fold .panel{z-index:2}
+.fold.drop{transform-origin:50% 0;animation:fdrop 1s cubic-bezier(.25,.9,.3,1) both}
+@keyframes fdrop{0%{transform:translateY(-70vh) scaleY(.06);opacity:0}40%{transform:translateY(0) scaleY(.06);opacity:1}55%{transform:scaleY(.3)}75%{transform:scaleY(.62)}100%{transform:none}}
+@media (prefers-reduced-motion: reduce){ .fold.drop{animation:none} }
 .tstack:not(.open) .deep{display:none}
 .tstack .wl > .day,.tstack .tclose{display:none}
 .tstack.open{cursor:auto}
@@ -564,7 +567,7 @@ body.phone .hotel{font-size:14px}
 @media (min-width:700px){.stopview{align-items:center;padding:24px}.stopview .sv-panel{border-radius:16px;max-height:calc(100% - 48px)}}
 </style>
 
-<div class="cover-scene" id="coverScene">
+<div class="cover-scene" id="coverScene" hidden>
   <div class="cover" id="cover">
     <div class="board">
       <div class="spine" aria-hidden="true"></div>
@@ -1673,7 +1676,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   function openFold() {
     document.body.classList.add('foldmode');
     $('#coverScene').hidden = true; $('#reader').hidden = false; $('#bar').hidden = false;
-    const fold = $('#fold'); fold.hidden = false;
+    const fold = $('#fold'); fold.hidden = false; fold.classList.add('drop'); fold.addEventListener('animationend', () => fold.classList.remove('drop'), { once: true });
     tstack = ticketStack();
     if (tstack) fold.append(tstack);
     secs = [{ id: 'contents', label: ['地图', 'Map'], node: contentsPage(), tab: tocTab },
@@ -1696,6 +1699,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     track();
     if (location.hash === '#tickets') openTickets(); // a link straight to the tickets, spread out
   }
+  if (!foldMode) $('#coverScene').hidden = false;
   if (foldMode) openFold(); else if (location.hash !== '#cover' && store.get('opened')) openBook(true); // from the bookcase shelf (#cover): always the cover first
 })();
 </script>
