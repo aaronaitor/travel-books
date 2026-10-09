@@ -148,9 +148,7 @@ body.foldmode .left-leaf,body.foldmode .stack{display:none}
 .fold{flex:1;height:100%;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;padding:26px 6px 30px;position:relative}
 .fold .panel{max-width:860px;margin:0 auto;position:relative;padding:24px 22px 26px;
   background:
-    linear-gradient(90deg,transparent calc(33.3% - 10px),rgba(0,0,0,.07) calc(33.3% - 1px),rgba(255,255,255,.75) 33.3%,rgba(255,255,255,0) calc(33.3% + 10px)),
-    linear-gradient(90deg,transparent calc(66.6% - 10px),rgba(255,255,255,.6) calc(66.6% - 1px),rgba(0,0,0,.09) 66.6%,rgba(0,0,0,0) calc(66.6% + 10px)),
-    repeating-linear-gradient(180deg,transparent 0 548px,rgba(0,0,0,.08) 556px,rgba(255,255,255,.7) 560px,transparent 572px),
+    repeating-linear-gradient(180deg,transparent 0 540px,rgba(0,0,0,.1) 556px,rgba(255,255,255,.8) 560px,rgba(255,255,255,0) 576px),
     linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.04) 10px,transparent 28px),#F4EEDC;
   box-shadow:0 12px 24px rgba(0,0,0,.14);transform-origin:50% 0;transform:perspective(1100px) rotateX(-58deg);opacity:.35;
   transition:transform .75s cubic-bezier(.25,1.15,.4,1),opacity .5s}
@@ -181,17 +179,20 @@ body.foldmode .left-leaf,body.foldmode .stack{display:none}
 .tpop[hidden]{display:none}
 @keyframes tfade{from{background:rgba(20,15,10,0)}}
 .tpop .twrap{position:relative;width:min(560px,100%);transform-origin:50% 0;animation:tpop .45s cubic-bezier(.3,1.35,.5,1) both}
-.tpop .twallet{position:relative;width:100%;max-height:calc(100dvh - 100px);overflow-y:auto;overscroll-behavior:contain;border-radius:14px;padding:46px 18px 22px;
-  background:repeating-linear-gradient(45deg,rgba(0,0,0,.025) 0 2px,transparent 2px 6px),linear-gradient(180deg,#D8B88A,#CDA977);box-shadow:0 24px 50px rgba(0,0,0,.45);
+.tpop .twallet{position:relative;width:100%;max-height:calc(100dvh - 90px);overflow-y:auto;overscroll-behavior:contain;padding:44px 10px 30px;scrollbar-width:none;
 }
 @keyframes tpop{from{transform:translateY(-60px) scale(.35);opacity:0}}
-.tpop .twallet .chapter,.tpop .twallet .kicker{color:#4A3420}
+.tpop .twallet .chapter,.tpop .twallet .kicker{display:none}
+.tpop .wl{gap:20px}
+.tpop .wl .day{color:#FFF6E0;text-shadow:0 1px 3px rgba(0,0,0,.6);margin:4px 0 -10px 6px}
+.tpop .wl .bp,.tpop .wl .tk{box-shadow:0 10px 22px rgba(0,0,0,.4);transform:rotate(var(--rot,0deg))}
+.tpop .wl .bp::before,.tpop .wl .bp::after,.tpop .wl .tk::before,.tpop .wl .tk::after{background:rgba(40,30,20,.55)}
 .tpop .twallet .scroll{position:static;overflow:visible;padding:0;inset:auto}
 .tpop .tmag{position:absolute;top:-38px;left:50%;width:70px;z-index:2;transform:translateX(-50%) rotate(-6deg);filter:drop-shadow(0 6px 5px rgba(0,0,0,.35))}
 .tpop .tmag svg{display:block;width:100%;height:auto}
-.tpop .tclose{position:absolute;top:10px;right:10px;border:0;background:rgba(255,255,255,.6);border-radius:999px;width:34px;height:34px;font:700 16px var(--sans);color:#4A3420;cursor:pointer}
+.tpop .tclose{position:absolute;top:6px;right:6px;z-index:3;border:0;background:rgba(255,255,255,.85);border-radius:999px;width:34px;height:34px;font:700 16px var(--sans);color:#4A3420;cursor:pointer}
 .tpop .wl > *{animation:tdrop .45s cubic-bezier(.3,1.3,.5,1) both;animation-delay:calc(var(--i,0) * 60ms + 120ms)}
-@keyframes tdrop{from{transform:translateY(-24px);opacity:0}}
+@keyframes tdrop{from{transform:translateY(-120px) rotate(0) scale(.6);opacity:0}}
 @media (max-width:560px){ .stamp{font-size:12px;padding:2px 7px;right:98px;top:22%} .bp .route{font-size:24px} }
 @media (prefers-reduced-motion: reduce){ .tpop,.tpop .twrap,.tpop .wl > *{animation:none} }
 .foldmag svg{display:block;width:100%;height:auto}
@@ -1529,10 +1530,11 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   function openTickets() {
     let pop = $('#ticketPop');
     if (!pop) {
-      const wallet = walletPage(); wallet.querySelectorAll('.wl > *').forEach((n, i) => n.style.setProperty('--i', i));
+      const wallet = walletPage(); // each ticket its own card, tumbling out of the magnet at a slight angle
+      wallet.querySelectorAll('.wl > *').forEach((n, i) => { n.style.setProperty('--i', i); n.style.setProperty('--rot', `${[-2, 1.5, -1, 2.5, -1.5, 1][i % 6]}deg`); });
       const close = el('button', { type: 'button', class: 'tclose', 'aria-label': 'Put the tickets away', text: '✕' });
       pop = el('div', { class: 'tpop', id: 'ticketPop', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Tickets' },
-        el('div', { class: 'twrap' }, el('div', { class: 'tmag', 'aria-hidden': 'true', html: magnetSvg() }), el('div', { class: 'twallet' }, close, wallet)));
+        el('div', { class: 'twrap' }, el('div', { class: 'tmag', 'aria-hidden': 'true', html: magnetSvg() }), close, el('div', { class: 'twallet' }, wallet)));
       pop.addEventListener('click', (e) => { if (e.target === pop) closeTickets(); });
       close.addEventListener('click', closeTickets);
       document.body.append(pop);
