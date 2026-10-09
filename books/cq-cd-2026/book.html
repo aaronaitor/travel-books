@@ -175,11 +175,14 @@ body.foldmode .left-leaf,body.foldmode .stack{display:none}
 /* stacked: the tickets stand upright side by side, tucked into the top of the paper so only 2/3 of each sticks out (user, 2026-10-09) */
 .tstack:not(.open){margin-bottom:-84px}
 .tstack:not(.open) .wl{position:relative;height:250px}
-.tstack:not(.open) .wl > *{position:absolute;top:100%;width:480px;box-sizing:border-box;z-index:calc(10 + var(--i,0));transform-origin:0 0;
-  left:calc(50% + (var(--i,0) - (var(--n,1) - 1) / 2) * min(70px, (100vw - 150px) / 6) - 48px);transform:rotate(calc(-90deg + var(--rot,0deg))) scale(.5)}
+.tstack:not(.open) .wl > *,.tstack:not(.open) .stk{position:absolute;top:100%;width:480px;box-sizing:border-box;z-index:calc(10 + var(--i,0));transform-origin:0 0;
+  --x:calc(50% + (var(--i,0) - (var(--n,1) - 1) / 2) * min(46px, (100vw - 150px) / 8));left:calc(var(--x) - 48px);transform:rotate(calc(-90deg + var(--rot,0deg))) scale(.5)}
+/* stamps peek out of the paper too, upright, a little bigger (user, 2026-10-09) */
+.tstack:not(.open) .stamps{display:contents}
+.tstack:not(.open) .stk{width:168px;left:calc(var(--x) - 63px);transform:scale(.75) translateY(calc(-100% - 40px)) rotate(var(--rot,0deg))}
+.tstack:not(.open) .stk.round{width:170px}
 .fold .panel{z-index:2}
-.tstack:not(.open) .wl > .deep{display:none}
-.tstack:not(.open) .stamps{flex-wrap:nowrap;justify-content:flex-end;overflow:hidden;padding:6px}
+.tstack:not(.open) .deep{display:none}
 .tstack .wl > .day,.tstack .tclose{display:none}
 .tstack.open{cursor:auto}
 .tstack.open .wl{display:flex;flex-direction:column;gap:20px}
@@ -1642,10 +1645,9 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   let tstack = null;
   function ticketStack() {
     const wallet = walletPage(); let i = 0;
-    wallet.querySelectorAll('.wl > :not(.day)').forEach((n) => { n.style.setProperty('--i', Math.min(i, 6)); n.style.viewTransitionName = `tk${i}`; if (i > 5) n.classList.add('deep'); n.style.setProperty('--rot', `${[-2, 1.5, -1, 2.5, -1.5, 1][i % 6]}deg`); i++; });
-    wallet.querySelectorAll('.stamps > *').forEach((n, k) => n.style.setProperty('--rot', `${[-3, 2, -1.5, 2.5][k % 4]}deg`));
+    wallet.querySelectorAll('.wl > :not(.day):not(.stamps), .stamps > .stk').forEach((n) => { n.style.setProperty('--i', Math.min(i, 8)); n.style.viewTransitionName = `tk${i}`; if (i > 7) n.classList.add('deep'); n.style.setProperty('--rot', `${[-2, 1.5, -1, 2.5, -1.5, 1][i % 6]}deg`); i++; });
     if (!i) return null;
-    wallet.querySelector('.wl').style.setProperty('--n', Math.min(i, 6));
+    wallet.querySelector('.wl').style.setProperty('--n', Math.min(i, 8));
     const close = el('button', { type: 'button', class: 'tclose', 'aria-label': 'Stack the tickets again', text: '✕' });
     const box = el('div', { class: 'tstack', id: 'tickets', role: 'button', tabindex: '0', 'aria-expanded': 'false', 'aria-label': `${i} tickets, tap to spread them out` }, close, wallet);
     box.addEventListener('click', (e) => { if (!box.classList.contains('open')) openTickets(); });
