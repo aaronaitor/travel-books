@@ -143,6 +143,34 @@ body.phone .legend .tt-p .zh{font-size:13px;line-height:1.25;display:-webkit-box
 body.phone .legend .tt-p .en{font-size:11px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body.phone .phonemap .chapter{font-size:32px} body.phone .phonemap .chapter small{font-size:13px;margin-top:4px}
 body.phone .phonemap{gap:10px}
+/* ---------- the folded map (user, 2026-10-09: "a folded map that scrolls, folds down"): one long map, its panels unfolding as they scroll in ---------- */
+body.foldmode .left-leaf,body.foldmode .stack{display:none}
+.fold{flex:1;height:100%;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;padding:26px 6px 30px;position:relative}
+.fold .panel{max-width:860px;margin:0 auto;position:relative;padding:24px 22px 26px;
+  background:linear-gradient(90deg,transparent calc(33.3% - 1px),rgba(0,0,0,.05) calc(33.3% - 1px),rgba(255,255,255,.5) 33.3%,transparent calc(33.3% + 2px)),
+    linear-gradient(90deg,transparent calc(66.6% - 1px),rgba(0,0,0,.05) calc(66.6% - 1px),rgba(255,255,255,.5) 66.6%,transparent calc(66.6% + 2px)),
+    linear-gradient(180deg,rgba(0,0,0,.08),transparent 22px),#F4EEDC;
+  box-shadow:0 12px 24px rgba(0,0,0,.14);transform-origin:50% 0;transform:perspective(1100px) rotateX(-58deg);opacity:.35;
+  transition:transform .75s cubic-bezier(.25,1.15,.4,1),opacity .5s}
+.fold .panel.odd{background-color:#EFE8D4}
+.fold .panel:first-of-type{border-radius:6px 6px 0 0}
+.fold .panel:last-of-type{border-radius:0 0 6px 6px}
+.fold .panel.open{transform:none;opacity:1}
+.fold .panel .scroll{position:static;overflow:visible;padding:0;inset:auto}
+.fold .daypanel > .scroll:first-child{position:relative}
+.fold .panel .pageno{display:none}
+.fold .daypanel{display:grid;gap:22px}
+@media (min-width:980px){ .fold .daypanel{grid-template-columns:1fr 1fr;align-items:start} }
+.fold .panel.wallet{background:repeating-linear-gradient(45deg,rgba(0,0,0,.025) 0 2px,transparent 2px 6px),linear-gradient(180deg,rgba(0,0,0,.08),transparent 22px),linear-gradient(180deg,#D8B88A,#CDA977)}
+.fold .panel.wallet .chapter,.fold .panel.wallet .kicker{color:#4A3420}
+.fold .pcard{position:absolute;top:14px;right:16px;width:min(38%,230px);margin:0;padding:8px 8px 34px;background:#FFFEFA;box-shadow:0 8px 16px rgba(0,0,0,.25);transform:rotate(4deg);z-index:3}
+.fold .pcard img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.fold .pcard figcaption{position:absolute;left:10px;right:10px;bottom:8px;font:700 18px/1 var(--hand);color:#3A332B;text-align:center}
+.foldmag{position:sticky;top:-18px;display:block;width:76px;margin:-12px auto -46px;z-index:8;transform:rotate(-6deg);filter:drop-shadow(0 6px 5px rgba(0,0,0,.35));pointer-events:none}
+.foldmag svg{display:block;width:100%;height:auto}
+@media (max-width:979px){ .fold .pcard{width:30%;top:-4px;right:8px;padding:5px 5px 24px} .fold .pcard figcaption{font-size:14px;bottom:5px} }
+@media (prefers-reduced-motion: reduce){ .fold .panel{transform:none;opacity:1;transition:none} .fold{scroll-behavior:auto} }
+
 /* ---------- papers on the fridge (user, 2026-10-09): folded map, ticket wallet, notes for upcoming days, postcards for finished ones ---------- */
 body.phone{background:linear-gradient(90deg,#DCDFDC,#EEF0EE 10%,#EEF0EE 90%,#DCDFDC)}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) body.phone{background:linear-gradient(90deg,#26292B,#34383A 10%,#34383A 90%,#26292B)} }
@@ -473,6 +501,7 @@ body.phone .hotel{font-size:14px}
   <div class="book" id="book">
     <div class="left-leaf" id="leftLeaf" aria-hidden="true"></div>
     <div class="stack" id="stack" role="region" aria-roledescription="book" aria-label="Trip book: swipe or use the arrows to turn pages"></div>
+    <div class="fold" id="fold" role="region" aria-label="Trip map: scroll down to unfold it" hidden></div>
     <nav class="thumbs" id="thumbs" aria-label="Chapters"></nav>
   </div>
 </div>
@@ -506,8 +535,12 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const wide = () => matchMedia('(min-width:980px)').matches;
   const phone = () => !!TRIP.phone && !wide(); // phone-first book on a phone-sized screen
-  const phoneBook = !!TRIP.phone; // its pages (one map page + timetable a day) at every width; wide screens show them side by side
-  const oneDayPage = () => phone() && !!TRIP.scroll_timetable; // phone: map, stops and timetable on one scrolling page a day
+  const phoneBook = !!TRIP.phone;
+  const foldMode = phoneBook; // the trip as one folded map that scrolls, instead of pages to turn
+  const foldW = (half) => { const w = Math.min($('#fold').clientWidth - 12, 860) - 44; return half && wide() ? (w - 22) / 2 : w; };
+  const goDay = (di) => (foldMode ? goSec(`day-${di}`) : turnTo(dayStart[di], { jump: true }));
+  const goSec = (id) => { const n = document.getElementById(`sec-${id}`); if (n) n.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); }; // its pages (one map page + timetable a day) at every width; wide screens show them side by side
+  const oneDayPage = () => !foldMode && phone() && !!TRIP.scroll_timetable; // phone: map, stops and timetable on one scrolling page a day
   document.body.classList.toggle('phone', !!TRIP.phone);
   const cv = TRIP.cover || {};
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -942,7 +975,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     const { box } = mapBox(m, { onPin: tapPin(di) }), d = TRIP.days[di];
     box.classList.add('spreadmap');
     const popped = new Set(); // one photo per stop, even when it has two pins (in by one gate, out by another)
-    const boxW = phoneBook ? $('#stack').clientWidth - (wide() ? 64 : 42) : 2 * ($('#stack').clientWidth - 64);
+    const boxW = foldMode ? foldW(true) : phoneBook ? $('#stack').clientWidth - (wide() ? 64 : 42) : 2 * ($('#stack').clientWidth - 64);
     const place = popPlacer(m, boxW, (m.pins || []).map((q) => [q.px[0] / m.width, q.px[1] / m.height]), Math.min(96, Math.max(50, 0.095 * boxW)));
     (m.pins || []).forEach((p, k) => {
       const ri = pinStop(di, p), r = d.rows[ri]; if (!r || r.isMove || !(r.photo || photoKind(r)) || popped.has(ri)) return;
@@ -1115,7 +1148,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       for (const c of m.circles) {
         const g = drawCircle(svg, c, m.width, m.height, placed);
         g.classList.add('ocircle'); g.setAttribute('role', 'button'); g.setAttribute('tabindex', '0'); g.setAttribute('aria-label', `Open ${c.label}`);
-        const go = () => turnTo(dayStart[c.day], { jump: true });
+        const go = () => goDay(c.day);
         g.addEventListener('click', go); g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
       }
       // overview_hotels: a line from the day's hotel to each place visited, the stops numbered as on their day map, a card at the hotel
@@ -1134,7 +1167,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
           el('b', { text: `Hotel · ${h.days.map((d) => `D${d + 1}`).join(' ')}` }), el('span', { text: h.name })));
       }
       if (m.stops) { // each stop's photo pops out here too (smaller), like on its day map
-        const boxW = $('#stack').clientWidth - (phone() ? 42 : 64), boxH = boxW * m.height / m.width;
+        const boxW = foldMode ? foldW(false) : $('#stack').clientWidth - (phone() ? 42 : 64), boxH = boxW * m.height / m.width;
         const avoid = (m.hotels || []).map((h) => { const x = h.px[0] / m.width, y = h.px[1] / m.height, hw = Math.min(0.46, 210 / boxW); const x0 = x < 0.25 ? x - 0.12 * hw : x > 0.75 ? x - 0.88 * hw : x - hw / 2; return [x0, y - 60 / boxH, x0 + hw, y + 18 / boxH]; });
         const place = popPlacer(m, boxW, m.stops.map((q) => [q.px[0] / m.width, q.px[1] / m.height]), Math.min(70, Math.max(40, 0.08 * boxW)), avoid);
         const seen = new Set();
@@ -1154,8 +1187,8 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
         || ((d.rows.find((r) => !r.isMove && !/^(Hotel|酒店)$/.test(r.place_zh)) || {}).place_zh || ''); // a travel day: its station or airport
       const b = el('button', { type: 'button', style: `--c:var(--m${i % 5})` }, el('span', { class: 'dn', text: `D${i + 1}` }),
         el('span', {}, el('span', { class: 't', text: d.short }), subs ? el('span', { class: 's', text: subs }) : null),
-        el('span', { class: 'pg', text: d.rows.length ? `p.${dayStart[i] + 1}` : '—' }));
-      b.addEventListener('click', () => turnTo(dayStart[i], { jump: true }));
+        el('span', { class: 'pg', text: !d.rows.length ? '—' : foldMode ? '↓' : `p.${dayStart[i] + 1}` }));
+      b.addEventListener('click', () => goDay(i));
       ol.append(el('li', {}, b));
     });
     const tt = getAround(transportTotals(TRIP.days.flatMap((d) => d.rows)), 'Getting around, whole trip');
@@ -1249,6 +1282,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     built.clear(); $('#leftLeaf').dataset.key = '';
   }
   function relayout() {
+    if (foldMode) return; // the folded map scrolls; nothing to re-fit
     const was = pages[cur] || {};
     fitted.clear(); layout();
     const i = pages.findIndex((p) => p.kind === was.kind && p.di === was.di && p.half === was.half);
@@ -1314,10 +1348,10 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   const tab = (label, title, cls, onClick) => { const b = el('button', { class: `thumb ${cls}`, type: 'button', title, 'aria-label': title, text: label }); b.addEventListener('click', onClick); thumbs.append(b); return b; };
   if (phoneBook) tab('冰箱', 'Back to the fridge', 'plain', () => { location.href = (TRIP.links && TRIP.links.bookcase) || '../../index.html'; });
   else tab('封面', 'Back to the cover', 'plain', () => closeBook());
-  const tocTab = tab(phoneBook ? '地图' : '目录', 'Contents', 'plain', () => turnTo(0, { jump: true }));
-  const walletTab = phoneBook ? tab('票', 'Tickets', 'plain', () => turnTo(1, { jump: true })) : null;
+  const tocTab = tab(phoneBook ? '地图' : '目录', 'Contents', 'plain', () => (foldMode ? goSec('contents') : turnTo(0, { jump: true })));
+  const walletTab = phoneBook ? tab('票', 'Tickets', 'plain', () => (foldMode ? goSec('wallet') : turnTo(1, { jump: true }))) : null;
   const stayTab = TRIP.hotels_page === false ? el('span') : tab('住', 'Hotels', 'plain', () => turnTo(1, { jump: true }));
-  const dayTabs = TRIP.days.map((d, i) => tab(`D${i + 1}`, `Day ${i + 1} · ${d.short}`, `m${i % 5}`, () => turnTo(dayStart[i], { jump: true })));
+  const dayTabs = TRIP.days.map((d, i) => tab(`D${i + 1}`, `Day ${i + 1} · ${d.short}`, `m${i % 5}`, () => goDay(i)));
   const bookTab = (TRIP.book_it || []).length ? tab('订', 'Book it', 'plain', () => turnTo(bookItPage, { jump: true })) : null;
 
   // ---------- turning pages ----------
@@ -1348,6 +1382,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   function show(i) { for (const [k, n] of built) if (k !== i) { n.hidden = true; n.removeAttribute('data-top'); n.removeAttribute('data-under'); n.style.transform = ''; } const n = pageEl(i); n.hidden = false; n.style.transform = ''; n.style.opacity = ''; }
   const EASE = 'cubic-bezier(.35,.1,.25,1)';
   function turnTo(target, { from = 0 } = {}) {
+    if (foldMode) { foldStep(target > cur ? 1 : -1); return; } // arrows and keys move one fold
     target = landing(Math.max(0, Math.min(pages.length - 1, target)));
     if (target >= pages.length) target = pages.length - 1;
     if (target === cur || busy) return;
@@ -1451,10 +1486,42 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   // a new size re-fits every page (debounced); late-loading fonts change line heights too
   let rt; const refit = (force) => { clearTimeout(rt); rt = setTimeout(() => { if (!$('#reader').hidden && !busy && (force === true || sizeKey() !== laidOut)) relayout(); }, 200); };
   new ResizeObserver(refit).observe($('#stack')); window.addEventListener('resize', refit); document.addEventListener('visibilitychange', refit); document.fonts && document.fonts.ready.then(() => refit(true));
-  if (phoneBook) { // papers on the fridge: no cover, the trip's magnet holds the pages
-    if (TRIP.cover && TRIP.cover.magnet) $('#book').append(el('div', { class: 'pinmag', 'aria-hidden': 'true', html: magnetSvg() }));
-    if (location.hash === '#cover') cur = 0;
-    openBook(true);
-  } else if (location.hash !== '#cover' && store.get('opened')) openBook(true); // from the bookcase shelf (#cover): always the cover first
+  // ---------- the folded map ----------
+  // Sections in order: the overview maps, the ticket wallet, then each day (map + stops, timetable beside or under it).
+  // A finished trip pins the day's own photo to its fold as a postcard.
+  let secs = [], secAt = 0;
+  function dayPanel(di) {
+    const wrap = el('div', { class: 'daypanel' }), left = phoneMapPage(di), tt = timetablePage(di);
+    wrap.append(left, tt);
+    const src = tripOver && dayPhoto(di);
+    if (src) { const city = (TRIP.days[di].title.split(' · ')[2] || '').split(' → ').pop(); left.prepend(el('figure', { class: 'pcard' }, el('img', { src, alt: '' }), el('figcaption', { text: `第${di + 1}天 · ${city || TRIP.days[di].short}` }))); }
+    return wrap;
+  }
+  function foldStep(dir) { const i = Math.max(0, Math.min(secs.length - 1, secAt + dir)); secs[i] && secs[i].el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); }
+  function openFold() {
+    document.body.classList.add('foldmode');
+    $('#coverScene').hidden = true; $('#reader').hidden = false; $('#bar').hidden = false;
+    const fold = $('#fold'); fold.hidden = false;
+    if (TRIP.cover && TRIP.cover.magnet) fold.append(el('div', { class: 'foldmag', 'aria-hidden': 'true', html: magnetSvg() }));
+    secs = [{ id: 'contents', label: ['地图', 'Map'], node: contentsPage(), tab: tocTab }, { id: 'wallet', label: ['票', 'Tickets'], node: walletPage(), tab: walletTab, cls: 'wallet' },
+      ...TRIP.days.map((d, di) => ({ id: `day-${di}`, label: [`D${di + 1}`, `Day ${di + 1} · ${d.short}`], node: dayPanel(di), tab: dayTabs[di] }))];
+    secs.forEach((x, i) => { x.el = el('section', { class: `panel ${x.cls || ''}${i % 2 ? ' odd' : ''}`, id: `sec-${x.id}`, 'aria-label': x.label[1] }, x.node); fold.append(x.el); });
+    updatePops();
+    // each fold opens as it scrolls into view; the tab strip and the counter follow the fold at the top
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) e.target.classList.add('open'); }), { root: fold, rootMargin: '0px 0px -12% 0px' });
+    secs.forEach((x) => io.observe(x.el));
+    const track = () => {
+      const top = fold.getBoundingClientRect().top + 90;
+      let i = 0; secs.forEach((x, k) => { if (x.el.getBoundingClientRect().top <= top) i = k; });
+      if (i === secAt && fold.dataset.tracked) return; secAt = i; fold.dataset.tracked = '1';
+      secs.forEach((x, k) => x.tab && x.tab.setAttribute('aria-current', String(k === i)));
+      const narrow = matchMedia('(max-width:520px)').matches;
+      $('#count').textContent = narrow ? `${secs[i].label[0]} · ${i + 1}/${secs.length}` : `${secs[i].label[1]} · ${i + 1} / ${secs.length}`;
+      if (phone()) { const on = secs[i].tab; if (on) thumbs.scrollTo({ left: on.offsetLeft - (thumbs.clientWidth - on.offsetWidth) / 2, behavior: reduced ? 'auto' : 'smooth' }); }
+    };
+    fold.addEventListener('scroll', () => requestAnimationFrame(track), { passive: true });
+    track();
+  }
+  if (foldMode) openFold(); else if (location.hash !== '#cover' && store.get('opened')) openBook(true); // from the bookcase shelf (#cover): always the cover first
 })();
 </script>
