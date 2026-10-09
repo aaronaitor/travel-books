@@ -185,7 +185,8 @@ body.foldmode .left-leaf,body.foldmode .stack{display:none}
 .tpop .twallet .chapter,.tpop .twallet .kicker{display:none}
 .tpop .wl{gap:20px}
 .tpop .wl .day{color:#FFF6E0;text-shadow:0 1px 3px rgba(0,0,0,.6);margin:4px 0 -10px 6px}
-.tpop .wl .bp,.tpop .wl .tk{box-shadow:0 10px 22px rgba(0,0,0,.4);transform:rotate(var(--rot,0deg))}
+.tpop .wl .bp,.tpop .wl .tk,.tpop .wl .bpass,.tpop .wl .cnt,.tpop .wl .jrt{box-shadow:0 10px 22px rgba(0,0,0,.4);transform:rotate(var(--rot,0deg))}
+.tpop .wl .cnt,.tpop .wl .jrt{width:100%;max-width:none}
 .tpop .wl .bp::before,.tpop .wl .bp::after,.tpop .wl .tk::before,.tpop .wl .tk::after{background:rgba(40,30,20,.55)}
 .tpop .twallet .scroll{position:static;overflow:visible;padding:0;inset:auto}
 .tpop .tmag{position:absolute;top:-38px;left:50%;width:70px;z-index:2;transform:translateX(-50%) rotate(-6deg);filter:drop-shadow(0 6px 5px rgba(0,0,0,.35))}
@@ -243,6 +244,48 @@ body.phone .page.postcard{background:#FBF7EE}
 .tk .band{background:var(--tc,#0E6B66)}
 .tk .kind{font:700 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--tc,#0E6B66)}
 .tk .name{font:700 16px/1.25 var(--zh)} .tk .en{font-size:12px;color:#6F665B}
+/* boarding pass */
+.bpass{position:relative;display:grid;grid-template-columns:1fr 34%;background:#fff;border-radius:12px;overflow:hidden;color:#1b1b1b;box-shadow:0 3px 8px rgba(60,40,20,.25)}
+.bpass .bph{background:var(--ac);color:#fff;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.bpass .bph b{font:800 13px var(--sans);letter-spacing:.08em} .bpass .bph span{font:700 10px var(--sans);letter-spacing:.1em;opacity:.9}
+.bpass .bpr{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:10px 14px 4px}
+.bpass .ap span,.bpass .f span{display:block;font:700 9px var(--sans);letter-spacing:.12em;color:#8a8a8a}
+.bpass .ap b{display:block;font:800 34px/1 var(--sans);letter-spacing:.02em} .bpass .ap small{font:12px var(--sans);color:#555}
+.bpass .ap:last-child{text-align:right}
+.bpass .pl{color:var(--ac);width:28px;height:28px}.bpass .pl svg{width:100%;height:100%}
+.bpass .bpg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 10px;padding:6px 14px 12px;border-top:1px dashed #ddd;margin-top:6px}
+.bpass .f b{display:block;font:700 13px var(--mono);color:#1b1b1b}
+.bpass .bps{border-left:2px dashed #cfcfcf;display:flex;flex-direction:column;background:#fafafa}
+.bpass .bps .bph{justify-content:center}
+.bpass .sr{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 6px 2px;font:800 20px var(--sans)} .bpass .sr span{color:var(--ac)}
+.bpass .sf{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px 12px}
+.bpass .st{font:700 10px var(--sans);letter-spacing:.08em;color:#8a8a8a;text-align:center}
+.bpass .bc{margin:auto 10px 10px;height:38px}.bpass .bc svg{width:100%;height:100%}
+.bpass::before,.bpass::after{content:"";position:absolute;right:calc(34% - 9px);width:18px;height:18px;border-radius:50%;background:rgba(40,30,20,.55)}
+.bpass::before{top:-9px} .bpass::after{bottom:-9px}
+.bpass .stamp{right:calc(34% + 16px);top:auto;bottom:14px;transform:rotate(-12deg)}
+/* 中国铁路 ticket */
+.cnt{position:relative;max-width:440px;padding:12px 16px 10px;border-radius:8px;color:#1b1b1b;box-shadow:0 3px 8px rgba(30,40,60,.25);
+  background:repeating-radial-gradient(circle at 20% 120%,rgba(70,130,190,.08) 0 2px,transparent 2px 9px),repeating-linear-gradient(115deg,rgba(255,255,255,.35) 0 6px,transparent 6px 12px),linear-gradient(180deg,#CFE6F5,#B9D9EE)}
+.cnt .ct{display:flex;justify-content:space-between;align-items:baseline}
+.cnt .cno{font:700 18px var(--mono);color:#C8281E;letter-spacing:.06em} .cnt .clogo{font:600 11px var(--zh);color:#2B5C86}
+.cnt .cr{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:6px;margin:8px 0 6px}
+.cnt .cs b{font:700 24px/1.1 var(--zh)} .cnt .cs small{font:500 14px var(--zh);margin-left:2px} .cnt .cs:last-child{text-align:right}
+.cnt .cn{text-align:center} .cnt .cn b{display:block;font:700 18px var(--mono)} .cnt .ca svg{width:80px;height:14px;display:block}
+.cnt .cl{display:flex;justify-content:space-between;font:600 15px var(--zh);margin:3px 0} .cnt .cp{font:700 18px var(--mono)}
+.cnt .cf{display:flex;justify-content:space-between;align-items:flex-end;font:12px var(--zh);color:#2B5C86;margin-top:6px}
+.cnt .cq{width:54px;height:54px;padding:3px;background:#fff}.cnt .cq svg{width:100%;height:100%;display:block}
+/* JR ticket */
+.jrt{position:relative;max-width:440px;padding:10px 16px 10px;border-radius:6px;color:#1b1b1b;box-shadow:0 3px 8px rgba(30,60,40,.25);
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.3) 0 3px,transparent 3px 6px),linear-gradient(180deg,#D9EFD8,#C3E3C4)}
+.jrt .jh{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1.5px solid #2E7D4F;padding-bottom:4px}
+.jrt .jh b{font:700 15px var(--zh);color:#1E5E3A} .jrt .jh span{font:600 11px var(--sans);color:#2E7D4F}
+.jrt .jr{display:flex;align-items:center;justify-content:center;gap:14px;margin:8px 0 4px;font:700 26px var(--zh)} .jrt .jr span{font-size:20px;color:#2E7D4F}
+.jrt .jl{display:flex;justify-content:space-between;gap:10px;font:600 14px var(--zh);margin:2px 0} .jrt .jp{font:700 17px var(--mono)} .jrt .js{font:12px var(--mono);color:#4C6E57}
+/* admission stub */
+.tk .stub .ao{font:800 12px var(--sans);letter-spacing:.14em;writing-mode:vertical-rl;transform:rotate(180deg);color:#2A2521}
+.tk .stub .sn{font:11px var(--mono);color:#8a7a62}
+@media (max-width:560px){ .bpass{grid-template-columns:1fr} .bpass .bps{display:none} .bpass::before,.bpass::after{display:none} .bpass .bpg{grid-template-columns:repeat(3,1fr)} .bpass .ap b{font-size:28px} }
 .stamp{position:absolute;right:104px;top:50%;transform:translateY(-50%) rotate(-14deg);border:3px solid #C8372A;color:#C8372A;border-radius:6px;padding:3px 10px;
   font:900 17px/1 var(--sans);letter-spacing:.14em;opacity:.82;pointer-events:none;mix-blend-mode:multiply}
 .stamp.used{border-color:#7A7064;color:#7A7064}
@@ -1097,6 +1140,63 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   // USED with a punched hole once the trip is over (user, 2026-10-09).
   const KIND_C = { FLIGHT: '#1F5D78', TRAIN: '#0E6B66', SHINKANSEN: '#2E6FB7', ROPEWAY: '#8A5A2B', ENTRY: '#8544C4', BUS: '#D9780F', CAR: '#4E6E9C', RUN: '#16895A' };
   const PLANE = '<svg class="plane" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" transform="rotate(90 12 12)"/></svg>';
+  // Tickets drawn like the real things (user, 2026-10-09): an airline boarding pass, a blue 中国铁路 ticket,
+  // a JR 乗車券, and an admission stub for everything else.
+  const CITY = { KUL: 'Kuala Lumpur', SZX: 'Shenzhen', CAN: 'Guangzhou', NRT: 'Tokyo Narita', HND: 'Tokyo Haneda', CKG: 'Chongqing', CTU: 'Chengdu', TFU: 'Chengdu Tianfu', NNG: 'Nanning', HKG: 'Hong Kong', PEK: 'Beijing', PVG: 'Shanghai' };
+  const AIR_C = { 'Vietnam Airlines': '#00596B', 'China Southern': '#2A5CAA', '南方航空': '#2A5CAA', AirAsia: '#D7262B', 'Malaysia Airlines': '#0B2A5A', 'Cathay Pacific': '#00645A' };
+  const svgOf = (w, h, body) => `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">${body}</svg>`;
+  const barcode = (seed) => { const r = rand(seed * 31 + 7); let x = 0, b = ''; while (x < 118) { const w = 1 + Math.floor(r() * 3); if (r() > 0.42) b += `<rect x="${x}" y="0" width="${w}" height="40" fill="#1b1b1b"/>`; x += w + 1; } return svgOf(120, 40, b); };
+  const qr = (seed) => { const r = rand(seed * 17 + 3), n = 21; let b = ''; const fin = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7" fill="#1b1b1b"/><rect x="${x + 1}" y="${y + 1}" width="5" height="5" fill="#fff"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3" fill="#1b1b1b"/>`;
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const inF = (x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12); if (!inF && r() > 0.52) b += `<rect x="${x}" y="${y}" width="1" height="1" fill="#1b1b1b"/>`; }
+    return svgOf(n, n, `<rect width="${n}" height="${n}" fill="#fff"/>${b}${fin(0, 0)}${fin(14, 0)}${fin(0, 14)}`); };
+  const serial = (t, d) => { let h = 7; for (const c of (t.name || '') + d.date) h = (h * 31 + c.charCodeAt(0)) % 999983; return h; };
+  const ends = (name) => { const p = (name || '').split(/\s*(?:->|→)\s*/); return [p[0] || '', p[p.length - 1] || ''].map((x) => x.replace(/（.*?）|\(.*?\)/g, '').trim()); };
+  const times = (t) => (t.time || '').split(/\s*[-–]\s*/);
+  function boardingPass(t, d, di, fare, status, stamp) {
+    const codes = (t.name || '').match(/\b[A-Z]{3}\b/g) || [], from = codes[0] || '', to = codes[codes.length - 1] || '';
+    const airM = ((t.name || '') + ' ' + (t.what || '')).match(/Vietnam Airlines|China Southern|AirAsia|Malaysia Airlines|Cathay Pacific|[\u4e00-\u9fa5]{2,4}航空/), air = airM ? airM[0] : 'Airline';
+    const fno = (t.what || '').match(/\b(?:[A-Z]{2}|[A-Z]\d|\d[A-Z])\d{2,4}\b/), [dep, arr] = times(t), dt = fmt(d.date);
+    const cell = (k, v) => el('div', { class: 'f' }, el('span', { text: k }), el('b', { text: v || '—' }));
+    const plane = el('span', { class: 'pl' }); plane.innerHTML = PLANE;
+    const left = el('div', { class: 'bpl' },
+      el('div', { class: 'bph' }, el('b', { text: air.toUpperCase() }), el('span', { text: 'BOARDING PASS · 登机牌' })),
+      el('div', { class: 'bpr' }, el('div', { class: 'ap' }, el('span', { text: 'FROM' }), el('b', { text: from }), el('small', { text: CITY[from] || '' })), plane,
+        el('div', { class: 'ap' }, el('span', { text: 'TO' }), el('b', { text: to }), el('small', { text: CITY[to] || '' }))),
+      el('div', { class: 'bpg' }, cell('Flight', fno && fno[0]), cell('Date', `${dt.d} ${dt.m.toUpperCase()}`), cell('Departs', /\d/.test(dep || '') ? dep : t.time), cell('Arrives', /\d/.test(arr || '') ? arr : ''),
+        cell('Gate', ''), cell('Seat', ''), cell('Class', 'Economy'), fare ? cell('Fare', fare[0]) : null));
+    const right = el('div', { class: 'bps' }, el('div', { class: 'bph' }, el('span', { text: 'BOARDING PASS' })),
+      el('div', { class: 'sr' }, el('b', { text: from }), el('span', { text: '→' }), el('b', { text: to })),
+      el('div', { class: 'sf' }, cell('Date', `${dt.d} ${dt.m.toUpperCase()}`), cell('Seat', '')), status ? el('div', { class: 'st', text: status }) : null,
+      el('div', { class: 'bc', html: barcode(serial(t, d)) }));
+    return el('div', { class: 'bpass', style: `--ac:${AIR_C[air] || '#1F5D78'}` }, left, right, stamp);
+  }
+  function railTicket(t, d, fare, status, stamp) { // 中国铁路 ticket, light blue with a wavy security pattern
+    const [a, b] = ends(t.name), no = (t.what || '').match(/\b[GDCKZTSL]\d{2,4}\b/), [dep] = times(t);
+    const [y, mo, da] = d.date.split('-').map(Number), price = fare && /rmb/i.test(fare[0]) ? `¥${parseFloat(fare[0]).toFixed(1)}元` : (fare ? fare[0] : '');
+    const st = (n) => el('div', { class: 'cs' }, el('b', { text: n.replace(/站$/, '') }), el('small', { text: '站' }));
+    const arrow = el('span', { class: 'ca', html: svgOf(80, 14, '<path d="M2 7h72M66 2l8 5-8 5" fill="none" stroke="#1b1b1b" stroke-width="2"/>') });
+    return el('div', { class: 'cnt' },
+      el('div', { class: 'ct' }, el('span', { class: 'cno', text: `Z${String(serial(t, d)).padStart(6, '0').slice(-6)}` }), el('span', { class: 'clogo', text: '中国铁路 China Railway' })),
+      el('div', { class: 'cr' }, st(a), el('div', { class: 'cn' }, el('b', { text: no ? no[0] : '—' }), arrow), st(b)),
+      el('div', { class: 'cl' }, el('span', { text: `${y}年${String(mo).padStart(2, '0')}月${String(da).padStart(2, '0')}日 ${dep || ''}开` }), el('span', { text: '— 车 — 号' })),
+      el('div', { class: 'cl' }, el('span', { class: 'cp', text: price }), el('span', { text: '二等座' })),
+      el('div', { class: 'cf' }, el('span', { text: status ? `${status} · 12306` : '仅供报销使用 · 12306' }), el('span', { class: 'cq', html: qr(serial(t, d)) })), stamp);
+  }
+  function jrTicket(t, d, fare, status, stamp) { // JR 乗車券・特急券, pale green
+    const [a, b] = ends(t.name), [, mo, da] = d.date.split('-').map(Number), [dep] = times(t);
+    const train = (t.en || '').match(/Toki|Tanigawa|Skyliner|Romancecar|Nozomi|Hikari|Kodama/i), price = fare && /jpy/i.test(fare[0]) ? `¥${fare[0].replace(/[^\d,]/g, '')}` : (t.price || '');
+    return el('div', { class: 'jrt' },
+      el('div', { class: 'jh' }, el('b', { text: /新干线|新幹線|SHINKANSEN/i.test((t.name || '') + (t.kind || '')) ? '乗車券・新幹線特急券' : '乗車券・特急券' }), el('span', { text: t.en || 'JR' })),
+      el('div', { class: 'jr' }, el('b', { text: a.replace(/^.*?\s/, '') }), el('span', { text: '→' }), el('b', { text: b.replace(/\s.*$/, '') })),
+      el('div', { class: 'jl' }, el('span', { text: `${mo}月${da}日 ${dep || ''}発` }), el('span', { text: train ? `${train[0]} 号` : '' }), el('span', { text: '指定席' })),
+      el('div', { class: 'jl' }, el('span', { class: 'jp', text: price }), el('span', { text: status || '' }), el('span', { class: 'js', text: `No.${String(serial(t, d)).slice(-5)}` })), stamp);
+  }
+  function admitTicket(t, d, kind, fare, status, stamp) {
+    const main = el('div', { class: 'main' }, el('span', { class: 'kind', text: kind }), el('span', { class: 'name', text: t.name }), t.en ? el('span', { class: 'en', text: t.en }) : null,
+      el('div', { class: 'meta' }, el('span', {}, 'Date', el('b', { text: d.short })), el('span', {}, 'Time', el('b', { text: t.time || '—' })), t.price || fare ? el('span', {}, 'Price', el('b', { text: t.price || fare[0] })) : null, t.book ? el('span', {}, 'Book', el('b', { text: t.book })) : null));
+    return el('div', { class: 'tk', style: `--tc:${KIND_C[kind] || '#0E6B66'}` }, el('div', { class: 'band' }), main,
+      el('div', { class: 'stub' }, el('span', { class: 'ao', text: 'ADMIT ONE' }), el('span', { class: 'sn', text: `Nº ${String(serial(t, d)).padStart(6, '0').slice(-6)}` }), status ? el('span', { text: status }) : null), stamp);
+  }
   function walletPage() {
     const s = el('div', { class: 'scroll' });
     s.append(el('div', { class: 'kicker', text: '票夹 · Tickets' }), el('h2', { class: 'chapter' }, 'Tickets', el('small', { text: tripOver ? 'kept from the trip' : 'what to book and show' })));
@@ -1108,18 +1208,12 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
         const kind = (t.kind || 'TICKET').toUpperCase(), status = t.booked || tripOver ? '' : (t.status || 'TO BOOK');
         const stamp = t.booked ? el('span', { class: 'stamp', text: 'BOOKED' }) : null;
         const fare = ((t.what || '') + ' ' + (t.price || '')).match(/[\d.,]+\s*(myr|rmb|jpy|krw|hkd)[^·\s]*/i);
-        if (kind === 'FLIGHT') {
-          const codes = (t.name || '').match(/\b[A-Z]{3}\b/g) || [], from = codes[0] || '', to = codes[codes.length - 1] || '';
-          const air = ((t.name || '') + ' ' + (t.what || '')).match(/Vietnam Airlines|China Southern|AirAsia|Malaysia Airlines|Cathay Pacific|[\u4e00-\u9fa5]{2,4}航空/);
-          const main = el('div', { class: 'main' }, el('span', { class: 'air', text: air ? air[0] : 'Flight' }));
-          const route = el('div', { class: 'route' }, from); route.insertAdjacentHTML('beforeend', PLANE); route.append(to);
-          main.append(route, el('div', { class: 'meta' }, el('span', {}, 'Date', el('b', { text: d.short })), el('span', {}, 'Time', el('b', { text: t.time || '—' })), fare ? el('span', {}, 'Fare', el('b', { text: fare[0] })) : null));
-          wl.append(el('div', { class: 'bp' }, main, el('div', { class: 'stub' }, 'Boarding pass', el('b', { text: `${from}→${to}` }), status), stamp));
-        } else {
-          const main = el('div', { class: 'main' }, el('span', { class: 'kind', text: kind }), el('span', { class: 'name', text: t.name }), t.en ? el('span', { class: 'en', text: t.en }) : null,
-            el('div', { class: 'meta' }, el('span', {}, 'Time', el('b', { text: t.time || '—' })), t.price || fare ? el('span', {}, 'Price', el('b', { text: t.price || fare[0] })) : null, t.book ? el('span', {}, 'Book', el('b', { text: t.book })) : null));
-          wl.append(el('div', { class: 'tk', style: `--tc:${KIND_C[kind] || '#0E6B66'}` }, el('div', { class: 'band' }), main, el('div', { class: 'stub' }, status || 'Admit one'), stamp));
+        if (kind === 'FLIGHT') wl.append(boardingPass(t, d, di, fare, status, stamp));
+        else if (/TRAIN|SHINKANSEN/.test(kind)) { // the ticket of the country it runs in: JR in Japan, 中国铁路 in China, a plain rail ticket elsewhere
+          const money = ((t.price || '') + ' ' + (fare ? fare[0] : '')).toLowerCase();
+          wl.append(/jpy/.test(money) || kind === 'SHINKANSEN' ? jrTicket(t, d, fare, status, stamp) : /rmb/.test(money) ? railTicket(t, d, fare, status, stamp) : admitTicket(t, d, 'TRAIN', fare, status, stamp));
         }
+        else wl.append(admitTicket(t, d, kind, fare, status, stamp));
       }
     });
     if (!wl.children.length) wl.append(el('p', { class: 'hotel', text: 'No tickets for this trip.' }));
