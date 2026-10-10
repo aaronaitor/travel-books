@@ -569,6 +569,14 @@ body.phone .hotel{font-size:14px}
 .foldmode .fold{padding-right:34px}
 .tt-stop.has-pc{padding-right:92px}
 .foldmode .tt-mv{margin-right:80px}
+.foldmode .tt-stop{position:relative}
+/* the folded map is printed paper: its ink stays dark in dark mode too (2026-10-10: dark mode left pale text on the cream paper) */
+@media (prefers-color-scheme: dark){ .foldmode .fold{color-scheme:light;
+  --paper:#FBF7EE; --paper-2:#F3EDDF; --paper-edge:#E2D8C4; --ink:#2A2521; --muted:#6F665B; --line:#E0D6C3; --surface:#FFFFFF; --surface-2:#F1EBDD;
+  --accent:#0E6B66; --accent-ink:#FFFFFF; --accent-soft:#D7EDEA; --warn:#A86400; --warn-soft:#FBEBD2;
+  --sign:#1F2A2E; --sign-ink:#FFFFFF; --pin:#1A2023; --pin-ink:#FFFFFF; --hi:#E4572E;
+  --m0:#D93A22; --m1:#2563C9; --m2:#16895A; --m3:#D9780F; --m4:#8544C4; color:var(--ink)} }
+.meal{position:absolute;left:-18px;top:2px;transform-origin:0 0;transform:rotate(-90deg) translateX(-100%);font:700 9.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--warn);white-space:nowrap;pointer-events:none}
 .mv{background:color-mix(in srgb,var(--accent) 11%,transparent);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:6px}
 .mv-h{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline}
 .mv-h b{font:700 14px var(--sans);font-variant-numeric:tabular-nums;color:var(--ink)} .mv-h span{font:500 13px var(--sans);color:var(--accent)}
@@ -856,6 +864,13 @@ const TRIP = {"id":"南宁-柳州-北海-2026","title":"南宁-柳州-北海 202
     const f = document.createDocumentFragment();
     text.split('\n').forEach((x, i) => { if (i) f.append('\n'); f.append((picks || []).some((p) => x.trim().startsWith(p)) ? el('b', { text: x }) : x); });
     return f;
+  }
+  // The meals at a stop (Breakfast / Lunch / Dinner / Supper, 早餐 / 午餐 / 晚餐 / 宵夜 in its details), written sideways
+  // in the paper's left margin beside the stop (user, 2026-10-10).
+  const MEAL = /(?:^|[\s，,、])(Breakfast|Brunch|Lunch|Dinner|Supper|早午餐|早餐|午餐|晚餐|宵夜)(?=$|[\s：:\-，,、（(])/gim;
+  function mealsOf(r) {
+    const m = [...new Set([...(r.details || '').matchAll(MEAL)].map((x) => x[1][0].toUpperCase() + x[1].slice(1).toLowerCase()))];
+    return m.join(' · ');
   }
   function moveCard(m) {
     const a = (m.opts || [])[0], c = el('div', { class: 'mv' });
@@ -1289,6 +1304,7 @@ const TRIP = {"id":"南宁-柳州-北海-2026","title":"南宁-柳州-北海 202
       if (!foldMode) head.addEventListener('click', () => openStop(di, ri)); else head.disabled = true;
       const li = el('li', { class: 'tt-stop', 'data-k': `${di}:${ri}:d` });
       const card = foldMode && clippedCard(r, ri); if (card) { li.append(card); li.classList.add('has-pc'); }
+      const meals = foldMode && mealsOf(r); if (meals) li.append(el('span', { class: 'meal', 'aria-hidden': 'true', text: meals }));
       li.append(head);
       if (card) { // the postcard carries the description and the guide; the paper keeps price, opening times and booking
         const { info } = splitDetails(r.details);
