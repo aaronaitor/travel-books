@@ -575,7 +575,7 @@ body.phone .hotel{font-size:14px}
 .mv-leg{display:grid;grid-template-columns:auto 1fr;gap:3px 8px;align-items:center;font:13px/1.35 var(--zh);color:var(--ink)}
 .mv-leg .linechip{min-width:0;padding:2px 7px;font-size:11.5px} .mv-leg small{grid-column:2;color:var(--muted);font-size:11.5px;margin-top:-2px}
 .mv-alt{font:12px/1.4 var(--sans);color:var(--muted)}
-.mv-tt{margin:0;white-space:pre-wrap;font:12.5px/1.45 var(--sans);color:var(--muted)} .mv-tt b{color:var(--ink)}
+.mv-tt{margin:0;white-space:pre-wrap;font:11.5px/1.45 var(--sans);letter-spacing:-.01em;color:var(--muted)} .mv-tt b{color:var(--ink)}
 .mv-more summary{cursor:pointer;font:600 12px var(--sans);color:var(--accent);list-style:none} .mv-more summary::-webkit-details-marker{display:none}
 .mv-more summary::before{content:"▸ "} .mv-more[open] summary::before{content:"▾ "} .mv-more .tk-body{padding:8px 0 0}
 /* one size front and back (user, 2026-10-10): the back scrolls inside the card instead of growing */
@@ -1265,7 +1265,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     const path = [{ transform: `translate(${dx}px,${dy}px) scale(${sc}) rotate(${rot}deg)` }, { transform: `translate(${dx - 70}px,${dy - 6}px) scale(${sc * 1.08}) rotate(${rot - 5}deg)`, offset: 0.3 }, { transform: 'none' }];
     const rev = [path[2], { ...path[1], offset: 0.7 }, path[0]]; // back: to the clip's mouth, then slide in
     const anim = (dir) => card.animate(dir > 0 ? path : rev, { duration: reduced ? 0 : 620, easing: 'cubic-bezier(.3,.8,.3,1)', fill: 'both' });
-    anim(1); requestAnimationFrame(() => wrap.classList.add('on')); card.focus();
+    anim(1); requestAnimationFrame(() => { wrap.classList.add('on'); card.classList.add('flip'); }); card.focus(); // opens on its back (user, 2026-10-10); tap to see the front
     card.addEventListener('click', (e) => { e.stopPropagation(); card.classList.toggle('flip'); });
     card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.classList.toggle('flip'); } });
     const close = () => {
