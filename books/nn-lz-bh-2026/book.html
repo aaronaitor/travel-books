@@ -1312,6 +1312,7 @@ const TRIP = {"id":"南宁-柳州-北海-2026","title":"南宁-柳州-北海 202
         ol.append(li); return;
       }
       if (r.about) li.append(el('p', { class: 'about', text: r.about }));
+      if (r.details && foldMode) { li.append(el('pre', { class: 'details' }, picked(r.details, r.pick))); ol.append(li); return; } // no drop-downs on the folded map (user, 2026-10-10)
       if (r.details) {
         const food = /^(早餐|午餐|晚餐|Breakfast|Lunch|Dinner)|\n(早餐|午餐|晚餐)/.test(r.details);
         li.append(unfold(el('details', { class: 'tt-more' }, el('summary', phoneBook ? { 'aria-label': food ? 'Food list and notes' : 'Details' } : { text: food ? '🍜 Food list & notes' : 'ℹ️ Details' }), el('pre', { class: 'details', text: r.details })), `${di}:${ri}:d`));
