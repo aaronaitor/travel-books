@@ -567,16 +567,17 @@ body.phone .hotel{font-size:14px}
 @media (min-width:700px){.stopview{align-items:center;padding:24px}.stopview .sv-panel{border-radius:16px;max-height:calc(100% - 48px)}}
 /* folded-map trips: each stop's postcard is clipped to the side of the paper; tap it to flip (user, 2026-10-10) */
 .foldmode .fold{padding-right:34px}
-.tt-stop.has-pc{padding-right:124px;min-height:186px}
+.tt-stop.has-pc{padding-right:92px}
+.foldmode .tt-mv{margin-right:80px}
 /* one size front and back (user, 2026-10-10): the back scrolls inside the card instead of growing */
-.pcc{position:absolute;top:2px;right:-42px;width:152px;height:180px;z-index:3;cursor:pointer;perspective:900px;transform:rotate(var(--pr,2deg));transform-origin:100% 20px}
+.pcc{position:absolute;top:2px;right:-42px;width:118px;height:134px;z-index:3;cursor:pointer;perspective:900px;transform:rotate(var(--pr,2deg));transform-origin:100% 20px}
 .pcc .clip{position:absolute;top:var(--ct,8px);right:-14px;width:60px;height:22px;z-index:4;transform:rotate(var(--cr,0deg));filter:drop-shadow(1px 1.5px 1px rgba(0,0,0,.25))}
 .pcc-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
 .pcc.flip .pcc-in{transform:rotateY(180deg)}
 .pcc .f{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#fff;padding:5px 5px 7px;box-shadow:0 5px 12px rgba(0,0,0,.28);color:#2A2521}
 .pcc .front{display:flex;flex-direction:column}
-.pcc .front img{display:block;width:100%;height:122px;object-fit:cover;background:#eee}
-.pcc .front b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:auto 0;font:700 13px/1.25 var(--zh);text-align:center}
+.pcc .front img{display:block;width:100%;height:86px;object-fit:cover;background:#eee}
+.pcc .front b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:auto 0;font:700 12px/1.25 var(--zh);text-align:center}
 .pcc .back{transform:rotateY(180deg);background:#FFFDF6;padding:9px 10px;display:flex;flex-direction:column;gap:4px;overflow-y:auto;overscroll-behavior:contain;
   background-image:repeating-linear-gradient(0deg,transparent 0 21px,rgba(120,100,70,.09) 21px 22px)}
 .pcc .back b{font:700 13px/1.25 var(--zh)} .pcc .back i{font:600 11px/1.3 var(--sans);font-style:normal;color:#4A4038}
@@ -584,8 +585,8 @@ body.phone .hotel{font-size:14px}
 .pcc .back h4{margin:4px 0 0;font:800 10px var(--sans);letter-spacing:.1em;color:#7A5A2B;text-transform:uppercase}
 .pcc .back pre{margin:0;white-space:pre-wrap;font:11.5px/1.45 var(--zh);color:#2A2521}
 .pcc .back a{font:12px/1.35 var(--zh);color:#B4232F;text-decoration:none}
-.tt-stop .info{display:grid;grid-template-columns:auto 1fr;gap:3px 8px;margin:2px 0 0;font:13.5px/1.45 var(--zh);color:#2A2521}
-.tt-stop .info dt{font:800 10.5px/1.9 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.tt-stop .info{display:block;margin:2px 0 0;font:13.5px/1.45 var(--zh);color:#2A2521}
+.tt-stop .info dt{margin-top:6px;font:700 12.5px/1.5 var(--sans);color:var(--accent);white-space:nowrap}
 .tt-stop .info dd{margin:0}
 .pcc:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 @media (prefers-reduced-motion: reduce){ .pcc-in{transition:none} }
@@ -1185,7 +1186,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       li.append(head);
       if (card) { // the postcard carries the description and the guide; the paper keeps price, opening times and booking
         const { info } = splitDetails(r.details);
-        if (info.length) { const dl = el('dl', { class: 'info' }); for (const [k, t] of info) dl.append(el('dt', { text: k }), el('dd', { text: t })); li.append(dl); }
+        if (info.length) { const dl = el('dl', { class: 'info' }); for (const [k, t] of info) dl.append(el('dt', { text: `${k}:` }), el('dd', { text: t })); li.append(dl); }
         ol.append(li); return;
       }
       if (r.about) li.append(el('p', { class: 'about', text: r.about }));
