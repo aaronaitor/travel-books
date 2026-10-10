@@ -878,18 +878,22 @@ const TRIP = {"id":"东京-2027","title":"东京 2027","subtitle":"9 days · 2 p
     const OPT = /^\s*[a-z]\.\s/, opts = (m.details || '').split('\n').some((x) => OPT.test(x));
     const how = [m.isMove || opts ? (a ? MODE_IC[a.mode] || '' : '') : m.place_zh.replace(/\s*->\s*/g, ' → '), m.km ? `${m.km} km` : ''].filter(Boolean).join(' · ');
     c.append(el('div', { class: 'mv-h' }, el('b', { text: m.time }), how ? el('span', { text: how }) : ''));
+    const legs = (m.stations || []).map((s) => {
+      const chip = el('span', { class: 'linechip', text: s.line.replace(/（.*$/, '') }); if (s.color) chip.style.background = s.color;
+      return el('div', { class: 'mv-leg' }, chip, el('span', {}, `${s.board} → ${s.alight}`, s.exit ? el('b', { text: ` · 出 ${s.exit}` }) : ''),
+        el('small', { text: [s.direction && `往${s.direction}`, s.stops && `${s.stops} 站`].filter(Boolean).join(' · ') }));
+    });
+    // the metro lines go right under the choice they belong to (user, 2026-10-10), else under the choices
+    const RAIL = /subway|metro|mtr|lrt|地铁|轨道|bus|巴士|公交|tram/i;
     if (opts) {
       const pick = (m.pick || []).some((p) => /^[a-z]\.$/.test(p)) ? m.pick : [...(m.pick || []), 'a.'];
       for (const x of m.details.split('\n').filter((x) => x.trim())) {
         const on = OPT.test(x) && pick.some((p) => x.trim().startsWith(p));
         c.append(el('div', { class: OPT.test(x) ? 'mv-opt' : 'mv-alt' }, on ? el('b', { text: x }) : x));
+        if (legs.length && OPT.test(x) && RAIL.test(x)) c.append(...legs.splice(0));
       }
     }
-    for (const s of m.stations || []) {
-      const chip = el('span', { class: 'linechip', text: s.line.replace(/（.*$/, '') }); if (s.color) chip.style.background = s.color;
-      c.append(el('div', { class: 'mv-leg' }, chip, el('span', {}, `${s.board} → ${s.alight}`, s.exit ? el('b', { text: ` · 出 ${s.exit}` }) : ''),
-        el('small', { text: [s.direction && `往${s.direction}`, s.stops && `${s.stops} 站`].filter(Boolean).join(' · ') })));
-    }
+    c.append(...legs);
     if (!opts && m.details) c.append(el('pre', { class: 'mv-tt' }, picked(m.details, m.pick)));
     const more = el('div', { class: 'tk-body' });
     if (m.walk_km >= 0.3) more.append(el('div', { class: 'tk-walk', text: `🚶 about ${m.walk_km} km on foot` }));
