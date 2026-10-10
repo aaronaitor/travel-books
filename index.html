@@ -33,7 +33,7 @@ h1 small{display:block;font:600 13px var(--sans);letter-spacing:.08em;text-trans
 .next{position:relative;background:#FFF3A8;color:#3A3220;padding:12px 16px 10px;font:700 21px/1.1 var(--hand);transform:rotate(2.5deg);box-shadow:0 6px 10px rgba(0,0,0,.18)}
 .next b{display:block;font:600 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:#7A6A3A;margin-bottom:2px}
 .next::before{content:"";position:absolute;top:-9px;left:calc(50% - 9px);width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FF8A7A,#C8372A 60%,#8E1F15);box-shadow:0 2px 3px rgba(0,0,0,.35)}
-.magnets{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:34px 22px;align-items:start}
+.magnets{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:56px 22px;align-items:start}
 .magnet{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;align-items:center;transform:rotate(var(--r));transition:transform .2s cubic-bezier(.3,1.4,.5,1)}
 .magnet .art{width:100%;max-width:200px;filter:drop-shadow(0 7px 5px rgba(0,0,0,.28)) drop-shadow(0 1px 1px rgba(0,0,0,.25));position:relative;z-index:1}
 .magnet .art svg{display:block;width:100%;height:auto}
@@ -42,15 +42,28 @@ h1 small{display:block;font:600 13px var(--sans);letter-spacing:.08em;text-trans
 .magnet.peel{transform:translateY(-14px) scale(1.12) rotate(0);transition:transform .3s cubic-bezier(.3,1.5,.5,1)}
 .magnet.peel .art{filter:drop-shadow(0 18px 14px rgba(0,0,0,.35))}
 .magnet[aria-disabled="true"]{cursor:default;opacity:.8}
-.tag{margin-top:-10px;background:var(--paper);border:1px solid var(--paper-edge);color:#3A332B;padding:10px 12px 5px;min-width:70%;text-align:center;transform:rotate(calc(var(--r) * -1.6));
-  box-shadow:0 3px 6px rgba(0,0,0,.14);font:700 19px/1.05 var(--hand)}
+/* under the magnet: the trip's folded paper map (creases across, folded layers at the bottom edge),
+   with a few tickets tucked in it peeking out below (user, 2026-10-10: "a folded paper instead of just a rectangle") */
+.paper{position:relative;margin-top:-10px;min-width:72%;transform:rotate(calc(var(--r) * -1.6))}
+.tag{position:relative;z-index:1;color:#3A332B;padding:11px 12px 7px;text-align:center;font:700 19px/1.05 var(--hand);
+  background:linear-gradient(180deg,#FCF8EF 0,#EFE7D6 32.6%,#D9CDB4 33.3%,#FFFCF4 34.2%,#F7F1E4 50%,#E9E0CC 66%,#D5C8AE 66.7%,#FCF8EF 67.6%,#EEE6D4 100%);
+  box-shadow:0 1px 0 #E2D8C4,0 2px 0 #F6F1E4,0 3px 0 #DDD2BC,0 4px 0 #F3EDDF,0 5px 0 #D8CDB6,0 9px 10px rgba(0,0,0,.2)}
+.tix{position:absolute;left:0;right:0;bottom:-30px;height:50px;z-index:0}
+.tix i{position:absolute;bottom:0;width:32px;height:50px;border-radius:2px;box-shadow:0 2px 3px rgba(0,0,0,.25)}
+.tix .bp{left:14%;transform:rotate(-8deg);background:linear-gradient(90deg,#2B5BA8 0 22%,#fff 22%);}
+.tix .bp::after{content:"";position:absolute;left:10px;right:4px;top:8px;height:16px;background:repeating-linear-gradient(180deg,#9AA9C2 0 2px,transparent 2px 6px)}
+.tix .tr{left:44%;transform:rotate(4deg);background:#CFE3F3;width:34px}
+.tix .tr::after{content:"";position:absolute;left:5px;right:5px;top:7px;height:3px;background:#D0342C;box-shadow:0 7px 0 #7FA6C9,0 12px 0 #7FA6C9}
+.tix .st{right:12%;bottom:4px;transform:rotate(10deg);width:30px;height:36px;background:#fff;padding:3px;border-radius:0;
+  -webkit-mask:radial-gradient(circle 2.2px,transparent 96%,#000) -2.5px -2.5px/5px 5px round,linear-gradient(#000 0 0) content-box;mask:radial-gradient(circle 2.2px,transparent 96%,#000) -2.5px -2.5px/5px 5px round,linear-gradient(#000 0 0) content-box}
+.tix .st::after{content:"";position:absolute;inset:4px;background:var(--c,#E08A3C)}
 .tag span{display:block;font:600 11px var(--sans);letter-spacing:.05em;color:#7A7064;margin-top:3px}
 .tag.soon span{color:var(--accent)}
 @media (max-width:560px){
   body{padding:12px 10px 28px}
   .freezer{padding:18px 44px 18px 18px}.main{padding:24px 38px 30px 14px}
   .door::after{right:10px;width:10px}
-  .magnets{grid-template-columns:1fr 1fr;gap:26px 14px}
+  .magnets{grid-template-columns:1fr 1fr;gap:50px 14px}
 }
 @media (prefers-reduced-motion: reduce){.magnet{transition:none}}
 </style>
@@ -105,7 +118,8 @@ const DATA = {"title":"Travel Magnets · 旅行冰箱贴","books":[{"title":"重
     const m = el(b.book ? 'button' : 'div', { class: 'magnet', type: b.book ? 'button' : null, role: 'listitem', style: `--r:${r}deg`,
       'aria-label': `${b.title}, ${when(b)}${b.book ? ': open the book' : ''}`, 'aria-disabled': b.book ? null : 'true' },
       el('div', { class: 'art', html: b.magnet || plain(b) }),
-      el('div', { class: `tag${soon ? ' soon' : ''}` }, when(b) || b.title, el('span', { text: b.book ? status : (b.note || 'no book yet') })));
+      el('div', { class: 'paper' }, b.book ? el('div', { class: 'tix', 'aria-hidden': 'true' }, el('i', { class: 'bp' }), el('i', { class: 'tr' }), el('i', { class: 'st', style: `--c:${b.cloth || '#E08A3C'}` })) : null,
+        el('div', { class: `tag${soon ? ' soon' : ''}` }, when(b) || b.title, el('span', { text: b.book ? status : (b.note || 'no book yet') }))));
     // the magnet peels off the fridge, then the book opens on its cover, where the same magnet lands
     if (b.book) m.addEventListener('click', () => { m.classList.add('peel'); setTimeout(() => { location.href = `${b.book}#cover`; }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 320); });
     box.append(m);
