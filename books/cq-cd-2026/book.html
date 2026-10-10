@@ -595,10 +595,12 @@ body.phone .hotel{font-size:14px}
 .pcz-back p{margin:0;font:14px/1.5 var(--zh)} .pcz-back p.en{font:13.5px/1.45 var(--sans);color:#3E362E}
 .pcz-back h4{margin:6px 0 0;font:800 11px var(--sans);letter-spacing:.1em;color:#7A5A2B;text-transform:uppercase}
 .pcz-back pre{margin:0;white-space:pre-wrap;font:13px/1.5 var(--zh)}
-.pcz-back a{font:13.5px/1.4 var(--zh);color:#B4232F;text-decoration:none}
 .pcz-back .r{display:flex;flex-direction:column;align-items:flex-end;gap:14px}
 .pcz-back .stampbox{width:62px;height:72px;border:2px dashed rgba(90,70,50,.45)}
-.pcz-back .lines{width:100%;flex:1;background:repeating-linear-gradient(0deg,transparent 0 25px,rgba(90,70,50,.35) 25px 26px)}
+.pcz-back .lines{width:100%;flex:1;display:flex;flex-direction:column;background:repeating-linear-gradient(0deg,transparent 0 25px,rgba(90,70,50,.35) 25px 26px)}
+.pcz-back.rn{grid-template-columns:1fr 40%}
+.pcz-back .lines a{display:block;height:26px;padding-top:3px;font:13px/19px var(--zh);color:#B4232F;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:480px){ .pcz-back.rn{grid-template-columns:1fr 38%} .pcz-back .lines a{font-size:11.5px} }
 @media (max-width:480px){ .pcz-back{grid-template-columns:1fr 22%;gap:10px;padding:12px} .pcz-back b{font-size:16px} .pcz-back p{font-size:13px} .pcz-back p.en{font-size:12.5px} .pcz-back .stampbox{width:44px;height:52px} }
 @media (prefers-reduced-motion: reduce){ .pcz .pcz-in{transition:none} .pcz-wrap{transition:none} }
 </style>
@@ -1183,10 +1185,11 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     const l = el('div', { class: 'l' }, el('b', { text: r.place_zh }), r.place_en && r.place_en !== r.place_zh ? el('i', { text: r.place_en }) : null,
       r.about ? el('p', { text: r.about }) : null, r.about_en ? el('p', { class: 'en', text: r.about_en }) : null);
     if (guide) l.append(el('h4', { text: 'Guide' }), el('pre', { text: guide }));
-    if (guides.length) { l.append(el('h4', { text: '攻略 · rednote' })); for (const n of guides) { const a = el('a', { href: n.url, target: '_blank', rel: 'noopener', text: `📕 ${n.title}` }); a.addEventListener('click', (e) => e.stopPropagation()); l.append(a); } }
+    const lines = el('div', { class: 'lines' });
+    for (const n of guides) { const a = el('a', { href: n.url, target: '_blank', rel: 'noopener', text: `📕 ${n.title}` }); a.addEventListener('click', (e) => e.stopPropagation()); lines.append(a); }
     const card = el('div', { class: 'pcz', role: 'button', tabindex: '0', 'aria-label': `${r.place_zh}: turn the postcard over`, style: `left:${x}px;top:${y}px;width:${W}px;height:${H}px` },
       el('div', { class: 'pcz-in' }, el('div', { class: 'pc-front' }, el('img', { src, alt: r.place_en || r.place_zh }), el('b', { text: r.place_zh })),
-        el('div', { class: 'pcz-back' }, l, el('div', { class: 'r', 'aria-hidden': 'true' }, el('div', { class: 'stampbox' }), el('div', { class: 'lines' })))));
+        el('div', { class: `pcz-back${guides.length ? ' rn' : ''}` }, l, el('div', { class: 'r' }, el('div', { class: 'stampbox', 'aria-hidden': 'true' }), lines))));
     const wrap = el('div', { class: 'pcz-wrap', role: 'dialog', 'aria-modal': 'true', 'aria-label': r.place_zh }, card);
     document.body.append(wrap); c.classList.add('out');
     const rot = parseFloat(getComputedStyle(c).getPropertyValue('--pr')) || 0, dx = box.left - x, dy = box.top - y;
