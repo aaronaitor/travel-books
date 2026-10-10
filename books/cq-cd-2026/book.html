@@ -599,12 +599,14 @@ body.phone .hotel{font-size:14px}
 .pcz-back .stampbox{width:62px;height:72px;border:2px dashed rgba(90,70,50,.45)}
 .pcz-back .lines{width:100%;flex:1;display:flex;flex-direction:column;background:repeating-linear-gradient(0deg,transparent 0 25px,rgba(90,70,50,.35) 25px 26px)}
 .pcz-back.rn{grid-template-columns:1fr 40%}
-.pcz-back .minis{width:100%;flex:1;min-height:0;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start}
-.pcz-back .mini{display:flex;flex-direction:column;gap:3px;text-decoration:none;color:#2A2521;background:#fff;padding:3px 3px 4px;border-radius:3px;box-shadow:0 2px 5px rgba(0,0,0,.18);transform:rotate(-1.5deg)}
-.pcz-back .mini:nth-child(even){transform:rotate(1.5deg)}
-.pcz-back .mini img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#eee}
-.pcz-back .mini span{font:600 10px/1.25 var(--zh);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.pcz-back .mini.nocover{border-top:3px solid #FF2442}
+/* rednote posts stacked top down, each framed in rednote red with the 📕 mark, like the map pins (user, 2026-10-10) */
+.pcz-back .minis{width:100%;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:7px}
+.pcz-back .mini{position:relative;display:grid;grid-template-columns:42px 1fr;gap:7px;align-items:center;text-decoration:none;color:#2A2521;background:#fff;padding:3px;border:2px solid #FF2442;border-radius:4px;box-shadow:0 2px 5px rgba(0,0,0,.15)}
+.pcz-back .mini img{display:block;width:42px;height:56px;object-fit:cover;border-radius:2px;background:#eee}
+.pcz-back .mini span{font:600 11px/1.3 var(--zh);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pcz-back .mini::after{content:"📕";position:absolute;left:30px;top:44px;font-size:12px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
+.pcz-back .mini.nocover::after{left:auto;right:4px;top:auto;bottom:4px}
+.pcz-back .mini.nocover{grid-template-columns:1fr;padding:6px 8px}
 @media (max-width:480px){ .pcz-back.rn{grid-template-columns:1fr 40%} .pcz-back.rn .stampbox{display:none} }
 @media (max-width:480px){ .pcz-back{grid-template-columns:1fr 22%;gap:10px;padding:12px} .pcz-back b{font-size:16px} .pcz-back p{font-size:13px} .pcz-back p.en{font-size:12.5px} .pcz-back .stampbox{width:44px;height:52px} }
 @media (prefers-reduced-motion: reduce){ .pcz .pcz-in{transition:none} .pcz-wrap{transition:none} }
