@@ -1156,10 +1156,13 @@ const TRIP = {"id":"南宁-柳州-北海-2026","title":"南宁-柳州-北海 202
       const own = P.list.filter((p) => p.key === key && p.asset).sort((a, b) => (a.slot === 'place' ? -1 : 0) - (b.slot === 'place' ? -1 : 0) || String(a.at).localeCompare(String(b.at)));
       for (const { pop, r } of live) {
         pop.dataset.seen = '1';
-        const post = !own.length && !r.photo && TRIP.pin_posts && (r.notes || []).find((n) => n.cover); // the stop's top rednote post, until there's a photo
-        const src = own.length ? blobSrc(own[0].asset) : r.photo || (post && post.cover);
+        // same choice as the postcards (user, 2026-10-10): a finished trip shows only the user's own photos; before that,
+        // the stop's top rednote post, else the place's photo
+        const post = !own.length && !tripOver && TRIP.pin_posts && (r.notes || []).find((n) => n.cover);
+        const src = own.length ? blobSrc(own[0].asset) : tripOver ? (r.own ? r.photo : '') : (post && post.cover) || r.photo;
         pop.hidden = !src; pop.classList.toggle('mine', !!own.length); pop.classList.toggle('post', !!post);
         const img = pop.querySelector('img'); if (src && img.getAttribute('src') !== src) img.src = src;
+        img.style.objectPosition = src === r.photo && r.focus ? `${r.focus[0] * 100}% ${r.focus[1] * 100}%` : '';
       }
     }
   }
@@ -1273,12 +1276,13 @@ const TRIP = {"id":"南宁-柳州-北海-2026","title":"南宁-柳州-北海 202
   }
   function clippedCard(r, ri) {
     if (/->|→/.test(r.place_zh) || r.kindLabel === 'Hotel' || /^[A-Z]{3} T\d/.test(r.place_zh)) return null;
-    const note = (r.notes || []).find((n) => n.cover), src = (tripOver && r.photo) || (note && note.cover) || r.photo;
+    const note = (r.notes || []).find((n) => n.cover), src = tripOver ? (r.own ? r.photo : '') : (note && note.cover) || r.photo; // finished trip: own photos only
     if (!src) return null;
     // each clip sits a little differently: height and angle (user, 2026-10-10)
     const look = `--pr:${[2.5, -2, 1.5, -2.5][ri % 4]}deg;--ct:${[8, 26, 14, 40, 18][ri % 5]}px;--cr:${[-6, 4, -2, 8, -9][ri % 5]}deg`;
     const c = el('div', { class: 'pcc', role: 'button', tabindex: '0', 'aria-label': `${r.place_zh}: take out the postcard`, style: look, html: CLIP });
-    c.append(el('div', { class: 'pc-front' }, el('img', { src, alt: r.place_en || r.place_zh, loading: 'lazy' }), el('b', { text: r.place_zh })));
+    const pos = src === r.photo && r.focus ? `object-position:${r.focus[0] * 100}% ${r.focus[1] * 100}%` : null; // cropped round its subject
+    c.append(el('div', { class: 'pc-front' }, el('img', { src, alt: r.place_en || r.place_zh, loading: 'lazy', style: pos }), el('b', { text: r.place_zh })));
     const open = (e) => { e.stopPropagation(); zoomCard(c, r, src); };
     c.addEventListener('click', open); c.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(e); } });
     return c;
@@ -1300,7 +1304,7 @@ const TRIP = {"id":"南宁-柳州-北海-2026","title":"南宁-柳州-北海 202
       a.addEventListener('click', (e) => e.stopPropagation()); stamps.append(a);
     });
     const card = el('div', { class: 'pcz', role: 'button', tabindex: '0', 'aria-label': `${r.place_zh}: turn the postcard over`, style: `left:${x}px;top:${y}px;width:${W}px;height:${H}px` },
-      el('div', { class: 'pcz-in' }, el('div', { class: 'pc-front' }, el('img', { src, alt: r.place_en || r.place_zh }), el('b', { text: r.place_zh })),
+      el('div', { class: 'pcz-in' }, el('div', { class: 'pc-front' }, el('img', { src, alt: r.place_en || r.place_zh, style: src === r.photo && r.focus ? `object-position:${r.focus[0] * 100}% ${r.focus[1] * 100}%` : null }), el('b', { text: r.place_zh })),
         el('div', { class: guides.length ? 'pcz-back rn' : 'pcz-back' }, l, el('div', { class: 'r' }, ...(guides.length ? [stamps] : [el('div', { class: 'stampbox', 'aria-hidden': 'true' }), lines])))));
     const wrap = el('div', { class: 'pcz-wrap', role: 'dialog', 'aria-modal': 'true', 'aria-label': r.place_zh }, card);
     document.body.append(wrap); c.classList.add('out');
