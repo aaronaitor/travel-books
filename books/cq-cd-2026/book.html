@@ -589,24 +589,25 @@ body.phone .hotel{font-size:14px}
 .pcz.flip .pcz-in{transform:rotateY(180deg)}
 .pcz .pc-front,.pcz .pcz-back{backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:3px;box-shadow:0 18px 40px rgba(0,0,0,.45)}
 .pcz .pc-front{padding:8px} .pcz .pc-front b{left:8px;right:8px;bottom:8px;padding:6px 10px;font-size:16px}
-.pcz-back{position:absolute;inset:0;transform:rotateY(180deg);background:#FFFDF6;display:grid;grid-template-columns:1fr 30%;gap:14px;padding:16px 16px 14px;color:#2A2521}
-.pcz-back .l{overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:6px;padding-right:12px;border-right:1.5px solid rgba(90,70,50,.3)}
-.pcz-back b{font:700 18px/1.25 var(--zh)} .pcz-back i{font:600 13px/1.3 var(--sans);font-style:normal;color:#4A4038}
-.pcz-back p{margin:0;font:14px/1.5 var(--zh)} .pcz-back p.en{font:13.5px/1.45 var(--sans);color:#3E362E}
-.pcz-back h4{margin:6px 0 0;font:800 11px var(--sans);letter-spacing:.1em;color:#7A5A2B;text-transform:uppercase}
-.pcz-back pre{margin:0;white-space:pre-wrap;font:13px/1.5 var(--zh)}
-.pcz-back .r{display:flex;flex-direction:column;align-items:flex-end;gap:14px}
+/* the back never scrolls: everything fits on the card, the text shrinks to fit (--fs, set when the card opens) (user, 2026-10-10) */
+.pcz-back{position:absolute;inset:0;transform:rotateY(180deg);background:#FFFDF6;display:grid;grid-template-columns:1fr 30%;gap:14px;padding:16px 16px 14px;color:#2A2521;overflow:hidden;--fs:1}
+.pcz-back .l{min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:calc(6px * var(--fs));padding-right:12px;border-right:1.5px solid rgba(90,70,50,.3)}
+.pcz-back b{font:700 calc(18px * var(--fs))/1.25 var(--zh)} .pcz-back i{font:600 calc(13px * var(--fs))/1.3 var(--sans);font-style:normal;color:#4A4038}
+.pcz-back p{margin:0;font:calc(14px * var(--fs))/1.45 var(--zh)} .pcz-back p.en{font:calc(13.5px * var(--fs))/1.4 var(--sans);color:#3E362E}
+.pcz-back h4{margin:calc(4px * var(--fs)) 0 0;font:800 calc(11px * var(--fs)) var(--sans);letter-spacing:.1em;color:#7A5A2B;text-transform:uppercase}
+.pcz-back pre{margin:0;white-space:pre-wrap;font:calc(13px * var(--fs))/1.45 var(--zh)}
+.pcz-back .r{min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:flex-end;gap:14px}
 .pcz-back .stampbox{width:62px;height:72px;border:2px dashed rgba(90,70,50,.45)}
-.pcz-back .lines{width:100%;flex:1;display:flex;flex-direction:column;background:repeating-linear-gradient(0deg,transparent 0 25px,rgba(90,70,50,.35) 25px 26px)}
-.pcz-back.rn{grid-template-columns:1fr 40%}
-/* rednote posts: the book's red-note cards in a row that scrolls sideways (user, 2026-10-10) */
-.pcz-back .xhs-row{width:100%;flex:1;min-height:0;align-items:flex-start;overscroll-behavior-x:contain}
-.pcz-back .xhs-card{flex:0 0 92px;border-top:3px solid #FF2442}
-.pcz-back .xhs-card .t{font-size:11px}
-.pcz-back.rn .stampbox{display:none}
-.pcz-back .mini.nocover{grid-template-columns:1fr;padding:6px 8px}
-@media (max-width:480px){ .pcz-back.rn{grid-template-columns:1fr 40%} }
-@media (max-width:480px){ .pcz-back{grid-template-columns:1fr 22%;gap:10px;padding:12px} .pcz-back b{font-size:16px} .pcz-back p{font-size:13px} .pcz-back p.en{font-size:12.5px} .pcz-back .stampbox{width:44px;height:52px} }
+.pcz-back .lines{width:100%;flex:1;background:repeating-linear-gradient(0deg,transparent 0 25px,rgba(90,70,50,.35) 25px 26px)}
+.pcz-back .rn-stamps{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:5px}
+.pcz-back .rn-stamp{display:block;position:relative;width:50px;height:60px;transform:rotate(var(--sr,0deg));filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.35));text-decoration:none}
+.pcz-back .rn-stamp .sv{display:block;width:100%;height:100%;padding:4px;background:#fff;
+  -webkit-mask:radial-gradient(circle 2.6px,transparent 96%,#000) -3px -3px/6px 6px round,linear-gradient(#000 0 0) content-box;-webkit-mask-composite:source-over;
+  mask:radial-gradient(circle 2.6px,transparent 96%,#000) -3px -3px/6px 6px round,linear-gradient(#000 0 0) content-box;mask-composite:add}
+.pcz-back .rn-stamp img{display:block;width:100%;height:100%;object-fit:cover;outline:1.5px solid #FF2442;outline-offset:-1.5px}
+.pcz-back .rn-stamp::after{content:"📕";position:absolute;right:6px;bottom:5px;font-size:10px;line-height:1}
+.pcz-back .rn-stamp .rn-t{display:block;height:100%;padding:3px;border:1.5px solid #FF2442;font:600 8px/1.25 var(--zh);color:#2A2521;overflow:hidden}
+@media (max-width:480px){ .pcz-back{grid-template-columns:1fr 27%;gap:10px;padding:12px} .pcz-back .stampbox{width:44px;height:52px} .pcz-back .rn-stamp{width:42px;height:50px} .pcz-back .rn-stamp .sv{padding:3px} }
 @media (prefers-reduced-motion: reduce){ .pcz .pcz-in{transition:none} .pcz-wrap{transition:none} }
 </style>
 
@@ -1186,21 +1187,23 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     if ($('.pcz-wrap')) return;
     const box = c.getBoundingClientRect(), W = Math.min(innerWidth * 0.92, 560), H = W * 2 / 3;
     const x = (innerWidth - W) / 2, y = Math.max(16, (innerHeight - H) / 2), sc = box.width / W;
-    const { guide } = splitDetails(r.details), guides = (r.notes || []).slice(0, 4);
+    const { guide } = splitDetails(r.details), guides = (r.notes || []).slice(0, 3);
     const l = el('div', { class: 'l' }, el('b', { text: r.place_zh }), r.place_en && r.place_en !== r.place_zh ? el('i', { text: r.place_en }) : null,
       r.about ? el('p', { text: r.about }) : null, r.about_en ? el('p', { class: 'en', text: r.about_en }) : null);
     if (guide) l.append(el('h4', { text: 'Guide' }), el('pre', { text: guide }));
-    const lines = el('div', { class: guides.length ? 'xhs-row' : 'lines' });
-    for (const n of guides) {
-      const a = el('a', { class: `xhs-card${n.cover ? '' : ' nocover'}`, href: n.url, target: '_blank', rel: 'noopener', 'aria-label': `rednote post: ${n.title}` },
-        n.cover ? el('img', { src: n.cover, alt: '', loading: 'lazy' }) : null, el('span', { class: 't', text: n.title }), el('span', { class: 'm' }, el('span', { text: n.author }), el('span', { text: `♥ ${n.likes}` })));
-      a.addEventListener('click', (e) => e.stopPropagation()); lines.append(a);
-    }
+    const lines = el('div', { class: 'lines', 'aria-hidden': 'true' }), stamps = el('div', { class: 'rn-stamps' });
+    guides.forEach((n, k) => {
+      const a = el('a', { class: 'rn-stamp', href: n.url, target: '_blank', rel: 'noopener', title: n.title, 'aria-label': `rednote post: ${n.title}`, style: `--sr:${[-4, 3, -2][k % 3]}deg` },
+        el('span', { class: 'sv' }, n.cover ? el('img', { src: n.cover, alt: '', loading: 'lazy' }) : el('span', { class: 'rn-t', text: n.title })));
+      a.addEventListener('click', (e) => e.stopPropagation()); stamps.append(a);
+    });
     const card = el('div', { class: 'pcz', role: 'button', tabindex: '0', 'aria-label': `${r.place_zh}: turn the postcard over`, style: `left:${x}px;top:${y}px;width:${W}px;height:${H}px` },
       el('div', { class: 'pcz-in' }, el('div', { class: 'pc-front' }, el('img', { src, alt: r.place_en || r.place_zh }), el('b', { text: r.place_zh })),
-        el('div', { class: `pcz-back${guides.length ? ' rn' : ''}` }, l, el('div', { class: 'r' }, el('div', { class: 'stampbox', 'aria-hidden': 'true' }), lines))));
+        el('div', { class: 'pcz-back' }, l, el('div', { class: 'r' }, guides.length ? stamps : el('div', { class: 'stampbox', 'aria-hidden': 'true' }), lines))));
     const wrap = el('div', { class: 'pcz-wrap', role: 'dialog', 'aria-modal': 'true', 'aria-label': r.place_zh }, card);
     document.body.append(wrap); c.classList.add('out');
+    const bk = card.querySelector('.pcz-back'), over = () => [...bk.children].some((x) => x.scrollHeight > x.clientHeight + 1);
+    for (let fs = W > 440 ? 1 : 0.92; fs >= 0.55; fs -= 0.04) { bk.style.setProperty('--fs', fs.toFixed(2)); if (!over()) break; }
     const rot = parseFloat(getComputedStyle(c).getPropertyValue('--pr')) || 0, dx = box.left - x, dy = box.top - y;
     const path = [{ transform: `translate(${dx}px,${dy}px) scale(${sc}) rotate(${rot}deg)` }, { transform: `translate(${dx - 70}px,${dy - 6}px) scale(${sc * 1.08}) rotate(${rot - 5}deg)`, offset: 0.3 }, { transform: 'none' }];
     const rev = [path[2], { ...path[1], offset: 0.7 }, path[0]]; // back: to the clip's mouth, then slide in
