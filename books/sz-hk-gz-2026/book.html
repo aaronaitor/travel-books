@@ -1304,7 +1304,7 @@ const TRIP = {"id":"sz-hk-gz-2026","title":"SZ-HK-GZ 2026","subtitle":"10 days �
   }
   function timetablePage(di) {
     const d = TRIP.days[di], s = el('div', { class: 'scroll' });
-    s.append(el('div', { class: 'kicker', text: `Day ${di + 1} · ${d.short}` }), el('h2', { class: 'chapter' }, 'Timetable', foldMode ? null : el('small', { text: 'tap a stop for details & photos' })), el('div', { class: 'ornament' }));
+    s.append(foldMode ? '' : el('div', { class: 'kicker', text: `Day ${di + 1} · ${d.short}` }), el('h2', { class: 'chapter' }, 'Timetable', foldMode ? null : el('small', { text: 'tap a stop for details & photos' })), el('div', { class: 'ornament' }));
     const ol = el('ol', { class: 'tt' });
     d.rows.forEach((r, ri) => {
       if (foldMode && (r.isMove || /->|→/.test(r.place_zh))) { ol.append(el('li', { class: 'tt-mv', 'data-k': `${di}:${ri}` }, moveCard(r))); return; }
