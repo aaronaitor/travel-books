@@ -1715,7 +1715,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   if (phoneBook) tab('冰箱', 'Back to the fridge', 'plain', () => { location.href = (TRIP.links && TRIP.links.bookcase) || '../../index.html'; });
   else tab('封面', 'Back to the cover', 'plain', () => closeBook());
   const tocTab = tab(phoneBook ? '地图' : '目录', 'Contents', 'plain', () => (foldMode ? goSec('contents') : turnTo(0, { jump: true })));
-  const walletTab = phoneBook ? tab('票', 'Tickets', 'plain', () => (foldMode ? openTickets() : turnTo(1, { jump: true }))) : null;
+  const walletTab = phoneBook && !foldMode ? tab('票', 'Tickets', 'plain', () => turnTo(1, { jump: true })) : null; // folded map: no 票 tab, tap the ticket stack (user, 2026-10-10)
   const stayTab = TRIP.hotels_page === false ? el('span') : tab('住', 'Hotels', 'plain', () => turnTo(1, { jump: true }));
   const dayTabs = TRIP.days.map((d, i) => tab(`D${i + 1}`, `Day ${i + 1} · ${d.short}`, `m${i % 5}`, () => goDay(i)));
   const bookTab = (TRIP.book_it || []).length ? tab('订', 'Book it', 'plain', () => turnTo(bookItPage, { jump: true })) : null;
