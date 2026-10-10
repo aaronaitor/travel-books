@@ -570,7 +570,7 @@ body.phone .hotel{font-size:14px}
 .tt-stop.has-pc{padding-right:124px;min-height:186px}
 /* one size front and back (user, 2026-10-10): the back scrolls inside the card instead of growing */
 .pcc{position:absolute;top:2px;right:-42px;width:152px;height:180px;z-index:3;cursor:pointer;perspective:900px;transform:rotate(var(--pr,2deg));transform-origin:100% 20px}
-.pcc .clip{position:absolute;top:var(--ct,8px);right:-14px;width:60px;height:22px;z-index:4;color:var(--cc,#6f767e);transform:rotate(var(--cr,0deg));filter:drop-shadow(1px 2px 1.5px rgba(0,0,0,.35))}
+.pcc .clip{position:absolute;top:var(--ct,8px);right:-14px;width:60px;height:22px;z-index:4;transform:rotate(var(--cr,0deg));filter:drop-shadow(1px 1.5px 1px rgba(0,0,0,.25))}
 .pcc-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
 .pcc.flip .pcc-in{transform:rotateY(180deg)}
 .pcc .f{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#fff;padding:5px 5px 7px;box-shadow:0 5px 12px rgba(0,0,0,.28);color:#2A2521}
@@ -1136,7 +1136,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   // Timetable: every row of the day; a stop shows its English name and what's there, the rest opens in its sheet.
   // A stop's postcard, clipped to the side of the paper: front = photo + name, back = name and what's there in 中文 and English.
   // Photo: our own once the trip is over, else the top rednote post's cover, else the place photo (user, 2026-10-10).
-  const CLIP = '<svg class="clip" viewBox="0 0 70 26" aria-hidden="true"><path d="M10 9h46a6 6 0 0 1 0 12H16a8.5 8.5 0 0 1 0-17h40" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/><path d="M10 9h46a6 6 0 0 1 0 12" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1" stroke-linecap="round"/></svg>';
+  const CLIP = '<svg class="clip" viewBox="0 0 70 26" aria-hidden="true"><defs><linearGradient id="clipSilver" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#f4f7fa"/><stop offset=".6" stop-color="#dfe7ee"/><stop offset="1" stop-color="#ffffff"/></linearGradient></defs><path d="M10 9h46a6 6 0 0 1 0 12H16a8.5 8.5 0 0 1 0-17h40" fill="none" stroke="#c2ccd5" stroke-width="3.8" stroke-linecap="round"/><path d="M10 9h46a6 6 0 0 1 0 12H16a8.5 8.5 0 0 1 0-17h40" fill="none" stroke="url(#clipSilver)" stroke-width="2.6" stroke-linecap="round"/><path d="M14 9h40M18 4h36" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/></svg>';
   // what stays on the paper for a stop with a postcard: price, opening times, where to book (user, 2026-10-10); the rest is the card's guide
   const INFO = [['Where to book', /预约|预订|订票|订位|买票|在线买|官网|官方平台|小程序|微信|WeChat|\bapp\b|App|Eki-net|e-Romancecar|美团|开卖|开售|\bbook/i],
     ['Opening times', /\d{1,2}:\d{2}\s*[-–~]\s*\d{1,2}:\d{2}|开门|闭馆|休馆|周.休|[一二三四五六日]休|营业|开放|\bopens?\b|closed|last entry|24小时|亮灯|lit up/i],
@@ -1155,7 +1155,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     const note = (r.notes || []).find((n) => n.cover), src = (tripOver && r.photo) || (note && note.cover) || r.photo;
     if (!src) return null;
     // each clip sits a little differently: height, angle and colour (user, 2026-10-10)
-    const look = `--pr:${[2.5, -2, 1.5, -2.5][ri % 4]}deg;--ct:${[8, 26, 14, 40, 18][ri % 5]}px;--cr:${[-6, 4, -2, 8, -9][ri % 5]}deg;--cc:${['#6f767e', '#a07d3b', '#6f767e', '#b4473d', '#4f6f8f'][ri % 5]}`;
+    const look = `--pr:${[2.5, -2, 1.5, -2.5][ri % 4]}deg;--ct:${[8, 26, 14, 40, 18][ri % 5]}px;--cr:${[-6, 4, -2, 8, -9][ri % 5]}deg`;
     const c = el('div', { class: 'pcc', role: 'button', tabindex: '0', 'aria-label': `${r.place_zh}: flip the postcard`, style: look, html: CLIP });
     const { guide } = splitDetails(r.details), guides = (r.notes || []).slice(0, 4);
     const back = el('div', { class: 'f back' }, el('b', { text: r.place_zh }), r.place_en && r.place_en !== r.place_zh ? el('i', { text: r.place_en }) : null,
