@@ -582,7 +582,7 @@ body.phone .hotel{font-size:14px}
 .mv-h b{font:700 14px var(--sans);font-variant-numeric:tabular-nums;color:var(--ink)} .mv-h span{font:500 13px var(--sans);color:var(--accent)}
 .mv-leg{display:grid;grid-template-columns:auto 1fr;gap:3px 8px;align-items:center;font:13px/1.35 var(--zh);color:var(--ink)}
 .mv-leg .linechip{min-width:0;padding:2px 7px;font-size:11.5px} .mv-leg small{grid-column:2;color:var(--muted);font-size:11.5px;margin-top:-2px}
-.mv-alt{font:12px/1.4 var(--sans);color:var(--muted)}
+.mv-alt{font:12px/1.4 var(--sans);color:var(--muted)} .mv-opt{font:12.5px/1.4 var(--sans);color:var(--muted)} .mv-opt b{color:var(--ink)}
 .mv-tt{margin:0;white-space:pre-wrap;font:11.5px/1.45 var(--sans);letter-spacing:-.01em;color:var(--muted)} .mv-tt b{color:var(--ink)}
 .mv-more summary{cursor:pointer;font:600 12px var(--sans);color:var(--accent);list-style:none} .mv-more summary::-webkit-details-marker{display:none}
 .mv-more summary::before{content:"▸ "} .mv-more[open] summary::before{content:"▾ "} .mv-more .tk-body{padding:8px 0 0}
@@ -874,16 +874,23 @@ const TRIP = {"id":"东京-2027","title":"东京 2027","subtitle":"9 days · 2 p
   }
   function moveCard(m) {
     const a = (m.opts || [])[0], c = el('div', { class: 'mv' });
-    const how = a ? [`${MODE_IC[a.mode] || ''} ${a.label}`, fmtMins(a.mins), a.fare != null ? fmtMoney(a.fare, a.cur) + (a.per_pax ? '/pax' : '') : '', m.km ? `${m.km} km` : ''].filter(Boolean).join(' · ')
-      : m.isMove ? m.kindLabel : m.place_zh.replace(/\s*->\s*/g, ' → ');
-    c.append(el('div', { class: 'mv-h' }, el('b', { text: m.time }), el('span', { text: how })));
+    // a / b / c choices as in the user's sheet, the preferred one bold: option a unless the row's `pick` names another ("b.")
+    const OPT = /^\s*[a-z]\.\s/, opts = (m.details || '').split('\n').some((x) => OPT.test(x));
+    const how = [m.isMove || opts ? (a ? MODE_IC[a.mode] || '' : '') : m.place_zh.replace(/\s*->\s*/g, ' → '), m.km ? `${m.km} km` : ''].filter(Boolean).join(' · ');
+    c.append(el('div', { class: 'mv-h' }, el('b', { text: m.time }), how ? el('span', { text: how }) : ''));
+    if (opts) {
+      const pick = (m.pick || []).some((p) => /^[a-z]\.$/.test(p)) ? m.pick : [...(m.pick || []), 'a.'];
+      for (const x of m.details.split('\n').filter((x) => x.trim())) {
+        const on = OPT.test(x) && pick.some((p) => x.trim().startsWith(p));
+        c.append(el('div', { class: OPT.test(x) ? 'mv-opt' : 'mv-alt' }, on ? el('b', { text: x }) : x));
+      }
+    }
     for (const s of m.stations || []) {
       const chip = el('span', { class: 'linechip', text: s.line.replace(/（.*$/, '') }); if (s.color) chip.style.background = s.color;
       c.append(el('div', { class: 'mv-leg' }, chip, el('span', {}, `${s.board} → ${s.alight}`, s.exit ? el('b', { text: ` · 出 ${s.exit}` }) : ''),
         el('small', { text: [s.direction && `往${s.direction}`, s.stops && `${s.stops} 站`].filter(Boolean).join(' · ') })));
     }
-    if (!a && m.details) c.append(el('pre', { class: 'mv-tt' }, picked(m.details, m.pick)));
-    if (a) for (const x of (m.details || '').split('\n').slice(1).filter((x) => x.trim())) c.append(el('div', { class: 'mv-alt', text: /^[b-z]\.\s/.test(x) ? `or ${x}` : x }));
+    if (!opts && m.details) c.append(el('pre', { class: 'mv-tt' }, picked(m.details, m.pick)));
     const more = el('div', { class: 'tk-body' });
     if (m.walk_km >= 0.3) more.append(el('div', { class: 'tk-walk', text: `🚶 about ${m.walk_km} km on foot` }));
     if (m.map_note) more.append(el('div', { class: 'note' }, el('b', { text: 'Route: ' }), m.map_note));
