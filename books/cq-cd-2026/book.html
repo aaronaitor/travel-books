@@ -465,6 +465,7 @@ body.phone .hotel{font-size:14px}
 .bk-spot .ki{font:600 10.5px/1.3 var(--mono);letter-spacing:.06em;color:var(--accent)}
 .bk-spot .en{font-size:12px;color:var(--muted)}
 .bk-steps{margin:0;padding:0 14px 12px 34px;font-size:13px;line-height:1.45}
+.bk-more{margin-top:-6px;padding-bottom:0}.bk-steps a{font-weight:600;color:var(--accent);padding:6px 0;display:inline-block}
 .ticket{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:inset 5px 0 0 var(--accent)}
 .ticket summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:1px;padding:9px 34px 9px 14px}
 .ticket summary::-webkit-details-marker{display:none}
@@ -1517,33 +1518,39 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     const s = el('div', { class: 'scroll' });
     s.append(el('div', { class: 'kicker', text: '预订 · Book it' }), el('h2', { class: 'chapter' }, 'Where we stayed', el('small', { text: '& what we booked' })), el('div', { class: 'ornament' }));
     const chips = el('div', { class: 'bk-chips', role: 'group', 'aria-label': 'Show' }), list = el('div', { class: 'bk-list' });
-    const filter = (k) => { chips.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === k))); list.querySelectorAll('.bk, .bk-spot').forEach((t) => { t.hidden = k !== 'all' && t.dataset.k !== k; }); };
-    const kinds = new Set(TRIP.book_it.map((b) => b.kind));
-    for (const [k, label] of [['all', 'All'], ['hotel', '🏨 Hotels'], ['ticket', '🎟️ Tickets'], ['spot', '📍 On the spot']]) { if (k !== 'all' && !kinds.has(k)) continue; const b = el('button', { type: 'button', 'data-k': k, text: label }); b.addEventListener('click', () => filter(k)); chips.append(b); }
+    const filter = (k) => { chips.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === k))); list.querySelectorAll('.bk, .bk-spot, .bk-more').forEach((t) => { t.hidden = k !== 'all' && t.dataset.k !== k; }); };
+    // three groups (user, 2026-10-18): hotels, transport, tickets; a ticket bought on the spot is still a ticket, with its how-to steps
+    const group = (b) => (b.kind === 'spot' ? 'ticket' : b.kind);
+    const kinds = new Set(TRIP.book_it.map(group));
+    for (const [k, label] of [['all', 'All'], ['hotel', '🏨 Hotels'], ['transport', '🚆 Transport'], ['ticket', '🎟️ Tickets']]) { if (k !== 'all' && !kinds.has(k)) continue; const b = el('button', { type: 'button', 'data-k': k, text: label }); b.addEventListener('click', () => filter(k)); chips.append(b); }
     const credits = [];
+    // how to buy, step by step; a link in a step (e.g. the Klook option, user 2026-10-18) becomes a button named after its site
+    const steps = (b) => el('ol', { class: 'bk-steps' }, ...(b.steps || []).map((x) => el('li', {}, ...x.split(/(https?:\/\/\S+)/).map((p, i) => (i % 2
+      ? el('a', { href: p, target: '_blank', rel: 'noopener', text: `${/klook/.test(p) ? 'Klook' : /trip\.com/.test(p) ? 'Trip.com' : 'Official site'} ›` }) : p)))));
     for (const b of TRIP.book_it) {
       if (b.kind === 'spot') { // no link: bought at the door or in WeChat, with the steps (user, 2026-10-17)
-        const d = el('details', { class: 'ticket', 'data-k': 'spot' });
-        d.append(el('summary', {}, el('span', { class: 'ki', text: `📍 ${b.site} · ${b.city} · ${b.when}` }), el('b', { text: b.name }), el('span', { class: 'en', text: [b.en, b.price].filter(Boolean).join(' · ') })),
-          el('ol', { class: 'bk-steps' }, ...(b.steps || []).map((x) => el('li', { text: x }))));
+        const d = el('details', { class: 'ticket', 'data-k': 'ticket' });
+        d.append(el('summary', {}, el('span', { class: 'ki', text: `🎟️ Ticket · 📍 ${b.site} · ${b.city} · ${b.when}` }), el('b', { text: b.name }), el('span', { class: 'en', text: [b.en, b.price].filter(Boolean).join(' · ') })), steps(b));
         d.classList.add('bk-spot'); list.append(d); continue;
       }
       const hotel = b.kind === 'hotel';
       const ph = el('div', { class: 'ph' });
       if (b.img) ph.append(el('img', { src: b.img, alt: '', loading: 'lazy' }));
       else if (b.art && TRIP.art && TRIP.art[b.art]) { const a = el('div', { class: 'art', 'aria-hidden': 'true' }); a.innerHTML = TRIP.art[b.art]; ph.append(a); }
-      ph.append(el('span', { class: 'tag', text: hotel ? 'HOTEL' : 'TICKET' }));
+      const ride = b.kind === 'transport';
+      ph.append(el('span', { class: 'tag', text: hotel ? 'HOTEL' : ride ? 'TRANSPORT' : 'TICKET' }));
       if (b.img_note) ph.append(el('span', { class: 'pn', text: b.img_note }));
       if (b.credit) credits.push(`${b.name}: ${b.credit}`);
       const t = el('a', { class: `bk ${hotel ? '' : 'ticket-k'}`, href: b.url, target: '_blank', rel: 'noopener', 'data-k': b.kind, 'aria-label': `Book ${b.name} on ${b.site}` }, ph,
-        el('div', { class: 'mid' }, el('span', { class: 'ki', text: `${hotel ? '🏨 Stay' : '🎟️ Ticket'} · ${b.city}` }), el('span', { class: 'nm', text: b.name }), el('span', { class: 'en', text: b.en }),
+        el('div', { class: 'mid' }, el('span', { class: 'ki', text: `${hotel ? '🏨 Stay' : ride ? '🚆 Transport' : '🎟️ Ticket'} · ${b.city}` }), el('span', { class: 'nm', text: b.name }), el('span', { class: 'en', text: b.en }),
           el('span', { class: 'row' }, el('span', { text: b.when }), el('b', { text: b.price }))),
         el('div', { class: 'stub', 'aria-hidden': 'true' }, el('span', { text: `${b.site} ›` })));
       t.addEventListener('click', () => t.classList.add('torn')); // the link opens in a new tab; the stub tears off here
       list.append(t);
+      if ((b.steps || []).length) { const o = steps(b); o.classList.add('bk-more'); o.dataset.k = b.kind; list.append(o); } // steps under the ticket too
     }
     filter('all');
-    s.append(chips, list, el('p', { class: 'foot', text: `Tap a ticket to open it on Trip.com, Klook or the official site.${kinds.has('spot') ? ' 📍 ones are bought on the spot in China (at the door, or in WeChat / Alipay): tap for the steps.' : ''} Prices are what we paid per person in ${TRIP.cover.from.slice(0, 4)}; check the site for today's price. Some links may earn us a small referral fee.` }));
+    s.append(chips, list, el('p', { class: 'foot', text: `Tap a ticket to open it on Trip.com, Klook or the official site.${TRIP.book_it.some((b) => b.kind === 'spot') ? ' 📍 tickets are bought on the spot (at the door, or in WeChat / Alipay): tap for the steps.' : ''} Prices are per person in the local currency and MYR, as of in ${TRIP.cover.from.slice(0, 4)}; check the site for today's price. Some links may earn us a small referral fee.` }));
     if (credits.length) s.append(el('p', { class: 'foot', text: `Photos: ${credits.join(' · ')}.` }));
     return s;
   }
@@ -1765,7 +1772,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   const stayTab = TRIP.hotels_page === false ? el('span') : tab('住', 'Hotels', 'plain', () => turnTo(1, { jump: true }));
   const dayTabs = TRIP.days.map((d, i) => tab(`D${i + 1}`, `Day ${i + 1} · ${d.short}`, `m${i % 5}`, () => goDay(i)));
   const budgetTab = TRIP.budget ? tab('钱', 'Budget', 'plain', () => (foldMode ? goSec('budget') : turnTo(budgetAt, { jump: true }))) : null;
-  const bookTab = (TRIP.book_it || []).length ? tab('订', 'Book it', 'plain', () => turnTo(bookItPage, { jump: true })) : null;
+  const bookTab = (TRIP.book_it || []).length ? tab('订', 'Book it', 'plain', () => (foldMode ? goSec('bookit') : turnTo(bookItPage, { jump: true }))) : null; // the folded map has no flip pages: its own Book it panel (user, 2026-10-18: '订 gives random pages')
 
   // ---------- turning pages ----------
   // On wide screens `cur` is always the right-hand page of a pair (odd); the left leaf shows cur - 1.
@@ -1957,7 +1964,8 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     if (tstack) fold.append(tstack);
     secs = [{ id: 'contents', label: ['地图', 'Map'], node: contentsPage(), tab: tocTab },
       ...TRIP.days.map((d, di) => ({ id: `day-${di}`, label: [`D${di + 1}`, `Day ${di + 1} · ${d.short}`], node: dayPanel(di), tab: dayTabs[di] })),
-      ...(TRIP.budget ? [{ id: 'budget', label: ['钱', 'Budget'], node: budgetPage(), tab: budgetTab }] : [])];
+      ...(TRIP.budget ? [{ id: 'budget', label: ['钱', 'Budget'], node: budgetPage(), tab: budgetTab }] : []),
+      ...(bookTab ? [{ id: 'bookit', label: ['订', 'Book it'], node: bookItContent(), tab: bookTab }] : [])];
     secs.forEach((x, i) => { x.el = el('section', { class: `panel ${x.cls || ''}${i % 2 ? ' odd' : ''}`, id: `sec-${x.id}`, 'aria-label': x.label[1] }, x.node); fold.append(x.el); });
     updatePops();
     // each fold opens as it scrolls into view; the tab strip and the counter follow the fold at the top
