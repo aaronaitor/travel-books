@@ -759,6 +759,8 @@ const TRIP = {"id":"东京-2027","title":"东京 2027","subtitle":"10 days · 2 
     // the trip's magnet is its page icon (user, 2026-10-18)
     const ico = el('link', { rel: 'icon', type: 'image/svg+xml' }); const raw = TRIP.cover.magnet;
     ico.href = 'data:image/svg+xml,' + encodeURIComponent(/<svg[^>]*xmlns=/.test(raw) ? raw : raw.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"')); document.head.append(ico);
+    // ... and its PNG for the iPhone home screen (user, 2026-10-18)
+    const im = new Image(); im.onload = () => { try { const c = el('canvas', { width: 180, height: 180 }), g = c.getContext('2d'), w = im.naturalWidth || 1, h = im.naturalHeight || w, s = Math.min(156 / w, 156 / h); g.fillStyle = '#fff'; g.fillRect(0, 0, 180, 180); g.drawImage(im, 90 - w * s / 2, 90 - h * s / 2, w * s, h * s); document.head.append(el('link', { rel: 'apple-touch-icon', href: c.toDataURL('image/png') })); } catch (e) {} }; im.src = ico.href;
     if (location.hash === '#cover') $('#cMagnet').classList.add('drop'); // just taken off the fridge
   }
   if (TRIP.driver_label) $('#driverLabel').textContent = TRIP.driver_label;
