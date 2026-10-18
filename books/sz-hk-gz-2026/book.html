@@ -756,6 +756,9 @@ const TRIP = {"id":"深圳-香港-广州-2026","title":"深圳-香港-广州 202
   else if (arts.length) { $('#cLabel').style.setProperty('--n', arts.length); for (const k of arts) { const a = el('div', { class: 'art' }); a.innerHTML = TRIP.art[k]; $('#cLabel').append(a); } } else $('#cLabel').hidden = true;
   if (cv.magnet) { // the same magnet as on the fridge: centred on a plain cover, stuck on the corner over the photos
     $('#cMagnet').innerHTML = magnetSvg(); $('#cMagnet').hidden = false; $('#cMagnet').classList.toggle('corner', !$('#cLabel').hidden);
+    // the trip's magnet is its page icon (user, 2026-10-18)
+    const ico = el('link', { rel: 'icon', type: 'image/svg+xml' }); const raw = TRIP.cover.magnet;
+    ico.href = 'data:image/svg+xml,' + encodeURIComponent(/<svg[^>]*xmlns=/.test(raw) ? raw : raw.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"')); document.head.append(ico);
     if (location.hash === '#cover') $('#cMagnet').classList.add('drop'); // just taken off the fridge
   }
   if (TRIP.driver_label) $('#driverLabel').textContent = TRIP.driver_label;

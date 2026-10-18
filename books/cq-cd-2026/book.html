@@ -756,6 +756,9 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
   else if (arts.length) { $('#cLabel').style.setProperty('--n', arts.length); for (const k of arts) { const a = el('div', { class: 'art' }); a.innerHTML = TRIP.art[k]; $('#cLabel').append(a); } } else $('#cLabel').hidden = true;
   if (cv.magnet) { // the same magnet as on the fridge: centred on a plain cover, stuck on the corner over the photos
     $('#cMagnet').innerHTML = magnetSvg(); $('#cMagnet').hidden = false; $('#cMagnet').classList.toggle('corner', !$('#cLabel').hidden);
+    // the trip's magnet is its page icon (user, 2026-10-18)
+    const ico = el('link', { rel: 'icon', type: 'image/svg+xml' }); const raw = TRIP.cover.magnet;
+    ico.href = 'data:image/svg+xml,' + encodeURIComponent(/<svg[^>]*xmlns=/.test(raw) ? raw : raw.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"')); document.head.append(ico);
     if (location.hash === '#cover') $('#cMagnet').classList.add('drop'); // just taken off the fridge
   }
   if (TRIP.driver_label) $('#driverLabel').textContent = TRIP.driver_label;
@@ -1520,7 +1523,8 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     const chips = el('div', { class: 'bk-chips', role: 'group', 'aria-label': 'Show' }), list = el('div', { class: 'bk-list' });
     const filter = (k) => { chips.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === k))); list.querySelectorAll('.bk, .bk-spot, .bk-more').forEach((t) => { t.hidden = k !== 'all' && t.dataset.k !== k; }); };
     // three groups (user, 2026-10-18): hotels, transport, tickets; a ticket bought on the spot is still a ticket, with its how-to steps
-    const group = (b) => (b.kind === 'spot' ? 'ticket' : b.kind);
+    // ponytail: a no-link ferry / shuttle is told apart by its name; give book_it a "group" field if more kinds need it
+    const group = (b) => (b.kind === 'spot' ? (/ferry|shuttle|船票|接驳/i.test(`${b.en} ${b.name}`) ? 'transport' : 'ticket') : b.kind);
     const kinds = new Set(TRIP.book_it.map(group));
     for (const [k, label] of [['all', 'All'], ['hotel', '🏨 Hotels'], ['transport', '🚆 Transport'], ['ticket', '🎟️ Tickets']]) { if (k !== 'all' && !kinds.has(k)) continue; const b = el('button', { type: 'button', 'data-k': k, text: label }); b.addEventListener('click', () => filter(k)); chips.append(b); }
     const credits = [];
@@ -1529,8 +1533,8 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       ? el('a', { href: p, target: '_blank', rel: 'noopener', text: `${/klook/.test(p) ? 'Klook' : /trip\.com/.test(p) ? 'Trip.com' : 'Official site'} ›` }) : p)))));
     for (const b of TRIP.book_it) {
       if (b.kind === 'spot') { // no link: bought at the door or in WeChat, with the steps (user, 2026-10-17)
-        const d = el('details', { class: 'ticket', 'data-k': 'ticket' });
-        d.append(el('summary', {}, el('span', { class: 'ki', text: `🎟️ Ticket · 📍 ${b.site} · ${b.city} · ${b.when}` }), el('b', { text: b.name }), el('span', { class: 'en', text: [b.en, b.price].filter(Boolean).join(' · ') })), steps(b));
+        const g = group(b), d = el('details', { class: 'ticket', 'data-k': g });
+        d.append(el('summary', {}, el('span', { class: 'ki', text: `${g === 'transport' ? '🚆 Transport' : '🎟️ Ticket'} · 📍 ${b.site} · ${b.city} · ${b.when}` }), el('b', { text: b.name }), el('span', { class: 'en', text: [b.en, b.price].filter(Boolean).join(' · ') })), steps(b));
         d.classList.add('bk-spot'); list.append(d); continue;
       }
       const hotel = b.kind === 'hotel';
