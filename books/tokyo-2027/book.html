@@ -427,46 +427,39 @@ body.phone .hotel{font-size:14px}
 .driver .close{position:absolute;top:14px;right:14px}
 .foot{font-size:11px;color:var(--muted)}
 /* ---------- getting here: moves ride on the stop they lead to ---------- */
-/* ---------- Book it: hotels (Trip.com) and tickets (Klook) as tear-off tickets ---------- */
+/* ---------- Book it: unified location blocks with side-by-side booking options ---------- */
 .bk-chips{display:flex;gap:6px;margin:4px 0 12px;flex-wrap:wrap}
 .bk-chips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
 .bk-chips button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .bk-list{display:flex;flex-direction:column;gap:14px;margin:0 -8px 14px;padding:4px 8px 30px;overflow:hidden}
-.bk{--k:var(--accent);position:relative;display:grid;grid-template-columns:34% 1fr 58px;min-height:128px;text-decoration:none;color:var(--ink);
-  filter:drop-shadow(0 3px 6px rgba(20,30,30,.16));transform:rotate(-.5deg);transition:transform .25s}
-.bk:nth-child(even){transform:rotate(.6deg)}
-.bk:hover{transform:rotate(0) translateY(-2px)}
-.bk.ticket-k{--k:var(--hi)}
-.bk>*{background:var(--surface)}
-.bk .ph{position:relative;border-radius:10px 0 0 10px;overflow:hidden;background:var(--surface-2)}
-.bk .ph img{width:100%;height:100%;object-fit:cover;display:block}
-.bk .ph .art{height:100%;display:grid;place-items:center}
-.bk .ph .art svg{width:100%;height:100%}
-.bk .ph .tag{position:absolute;left:6px;top:6px;background:var(--k);color:#fff;font:700 10px/1 var(--mono);letter-spacing:.08em;padding:4px 6px;border-radius:4px}
-.bk .ph .pn{position:absolute;left:0;right:0;bottom:0;padding:10px 6px 4px;font-size:10px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.55))}
-.bk .mid{padding:10px 12px 9px;display:flex;flex-direction:column;gap:3px;min-width:0;
+.bk-block{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;filter:drop-shadow(0 3px 6px rgba(20,30,30,.12));transform:rotate(-.4deg);transition:transform .25s}
+.bk-block:nth-child(even){transform:rotate(.4deg)}
+.bk-block:hover{transform:rotate(0) translateY(-2px)}
+@media (prefers-reduced-motion:reduce){.bk-block{transition:none}}
+.bk-head{--k:var(--accent);position:relative;display:grid;grid-template-columns:34% 1fr;min-height:110px;color:var(--ink);background:var(--surface)}
+.bk-head.ticket-k{--k:var(--hi)}
+.bk-head .ph{position:relative;overflow:hidden;background:var(--surface-2)}
+.bk-head .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.bk-head .ph .art{height:100%;display:grid;place-items:center}
+.bk-head .ph .art svg{width:100%;height:100%}
+.bk-head .ph .tag{position:absolute;left:6px;top:6px;background:var(--k);color:#fff;font:700 10px/1 var(--mono);letter-spacing:.08em;padding:4px 6px;border-radius:4px}
+.bk-head .ph .pn{position:absolute;left:0;right:0;bottom:0;padding:10px 6px 4px;font-size:10px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.bk-head .mid{padding:10px 12px 9px;display:flex;flex-direction:column;gap:3px;min-width:0;
   background:repeating-linear-gradient(135deg,transparent 0 11px,color-mix(in srgb,var(--k) 5%,transparent) 11px 12px),var(--surface)}
-.bk .ki{font:600 10.5px/1 var(--mono);letter-spacing:.1em;color:var(--k);text-transform:uppercase}
-.bk .nm{font:700 15px/1.3 var(--zh)}
-.bk .en{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bk .row{display:flex;justify-content:space-between;align-items:end;gap:8px;margin-top:auto;font:500 12px var(--mono)}
-.bk .row b{font-size:14px;color:var(--k)}
-.bk .row>*{white-space:nowrap}
-.bk .row{flex-wrap:wrap;row-gap:2px}
-@media (max-width:520px){.bk{grid-template-columns:30% 1fr 40px}.bk .nm{font-size:14px}.bk .stub span{font-size:11px}}
-/* the stub: a perforated strip with notches, torn off on tap */
-.bk .stub{border-radius:0 10px 10px 0;border-left:2px dashed var(--line);display:grid;place-items:center;background:var(--k);color:#fff;
-  -webkit-mask:radial-gradient(circle 8px at 0 0,#0000 98%,#000) top left/100% 51% no-repeat,radial-gradient(circle 8px at 0 100%,#0000 98%,#000) bottom left/100% 51% no-repeat;
-  transform-origin:0 100%;transition:transform .5s cubic-bezier(.3,1.4,.5,1),opacity .5s}
-.bk .stub span{writing-mode:vertical-rl;font:700 13px/1 var(--mono);letter-spacing:.14em}
-.bk.torn .stub{transform:translate(18px,26px) rotate(22deg);opacity:.25}
-.bk.torn .ph::after{content:"✓ 已打开";white-space:nowrap;position:absolute;left:50%;top:50%;translate:-50% -50%;background:rgba(255,255,255,.85);font:700 15px var(--mono);color:var(--k);border:2px solid var(--k);border-radius:4px;padding:2px 5px;transform:rotate(-8deg)}
-@media (prefers-reduced-motion:reduce){.bk,.bk .stub{transition:none}}
-.bk-spot .sum{display:flex;flex-direction:column;gap:1px;padding:9px 14px}
+.bk-head .ki{font:600 10.5px/1 var(--mono);letter-spacing:.1em;color:var(--k);text-transform:uppercase}
+.bk-head .nm{font:700 15px/1.3 var(--zh)}
+.bk-head .en{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bk-head .row{display:flex;justify-content:space-between;align-items:end;gap:8px;margin-top:auto;font:500 12px var(--mono);flex-wrap:wrap;row-gap:2px}
+.bk-head .row b{font-size:14px;color:var(--k)}
+.bk-head .row>*{white-space:nowrap}
+@media (max-width:520px){.bk-head{grid-template-columns:30% 1fr}.bk-head .nm{font-size:14px}}
+.bk-spot{background:var(--surface);box-shadow:inset 4px 0 0 var(--accent)}
+.bk-spot .sum{display:flex;flex-direction:column;gap:2px;padding:10px 14px}
 .bk-spot .ki{font:600 10.5px/1.3 var(--mono);letter-spacing:.06em;color:var(--accent)}
+.bk-spot .sum b{font:700 15px/1.3 var(--zh);color:var(--ink)}
 .bk-spot .en{font-size:12px;color:var(--muted)}
 /* one block per way to book, in that app's colours: name only, no icon; side by side, not stacking (user, 2026-10-19) */
-.bk-ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:8px;margin-top:-6px;align-items:stretch}
+.bk-ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:8px;padding:10px 12px 12px;background:color-mix(in srgb,var(--surface-2) 35%,var(--surface));border-top:1px solid var(--line);align-items:stretch}
 .bk-way{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px;line-height:1.45;min-width:0}
 .bk-way .wn{display:block;padding:6px 10px;background:var(--w);color:var(--wt);font:700 12px/1.3 var(--sans);letter-spacing:.04em}
 .bk-steps{flex:1;margin:0;padding:8px 12px 8px 24px;overflow-wrap:anywhere}.bk-steps li+li{margin-top:4px}
@@ -474,14 +467,12 @@ body.phone .hotel{font-size:14px}
 .bk-go{margin:auto 10px 10px}
 .bk-note{grid-column:1/-1;margin:0;font-size:11.5px;color:var(--muted)}
   /* Bookable flights and trains use the wallet's real-ticket artwork, with the booking action kept below it. */
-  .bk-ticket{position:relative;display:flex;flex-direction:column;gap:0;filter:drop-shadow(0 3px 6px rgba(20,30,30,.16));transform:rotate(-.5deg);transition:transform .25s}
-  .bk-ticket:nth-child(even){transform:rotate(.6deg)} .bk-ticket:hover{transform:rotate(0) translateY(-2px)}
-  .bk-ticket .bpass,.bk-ticket .cnt,.bk-ticket .jrt{width:100%;max-width:none;box-shadow:none}
-  .bk-ticket .bpass{border-radius:10px 10px 0 0}.bk-ticket .cnt,.bk-ticket .jrt{border-radius:10px 10px 0 0}
+  .bk-ticket{position:relative;display:flex;flex-direction:column;gap:0}
+  .bk-ticket .bpass,.bk-ticket .cnt,.bk-ticket .jrt{width:100%;max-width:none;box-shadow:none;border-radius:0}
   .bk-ticket .bpass .ap b{font-size:clamp(20px,7vw,28px)} .bk-ticket .bpass .ap small{overflow-wrap:anywhere}
-  .bk-ticket .booking-caption,.bk-ticket .booking-actions{padding:8px 12px;background:var(--surface);border-left:1px solid var(--line);border-right:1px solid var(--line)}
-  .bk-ticket .booking-caption{font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);border-radius:0 0 10px 10px} .bk-ticket .booking-caption b{display:block;font:700 14px/1.3 var(--zh);color:var(--ink)}
-  .bk-ticket .booking-actions{border-bottom:1px solid var(--line);border-radius:0 0 10px 10px}.bk-ticket .booking-actions .btn{padding:7px 10px;font-size:13px}
+  .bk-ticket .booking-caption,.bk-ticket .booking-actions{padding:8px 12px;background:var(--surface)}
+  .bk-ticket .booking-caption{font-size:12px;color:var(--muted)} .bk-ticket .booking-caption b{display:block;font:700 14px/1.3 var(--zh);color:var(--ink)}
+  .bk-ticket .booking-actions{border-top:1px solid var(--line)}.bk-ticket .booking-actions .btn{padding:7px 10px;font-size:13px}
   @media (prefers-reduced-motion:reduce){.bk-ticket{transition:none}}
 .ticket{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:inset 5px 0 0 var(--accent)}
 .ticket summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:1px;padding:9px 34px 9px 14px}
@@ -1562,7 +1553,7 @@ const TRIP = {"id":"东京-2027","title":"东京 2027","subtitle":"10 days · 2 
     const s = el('div', { class: 'scroll' });
     s.append(el('div', { class: 'kicker', text: '预订 · Book it' }), el('h2', { class: 'chapter' }, 'Where we stayed', el('small', { text: '& what we booked' })), el('div', { class: 'ornament' }));
     const chips = el('div', { class: 'bk-chips', role: 'group', 'aria-label': 'Show' }), list = el('div', { class: 'bk-list' });
-    const filter = (k) => { chips.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === k))); list.querySelectorAll('.bk, .bk-ticket, .bk-spot, .bk-ways').forEach((t) => { t.hidden = k !== 'all' && t.dataset.k !== k; }); };
+    const filter = (k) => { chips.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === k))); list.querySelectorAll('.bk-block').forEach((t) => { t.hidden = k !== 'all' && t.dataset.k !== k; }); };
     // three groups (user, 2026-10-18): hotels, transport, tickets; a ticket bought on the spot is still a ticket, with its how-to steps
     // ponytail: a no-link ferry / shuttle is told apart by its name; give book_it a "group" field if more kinds need it
     const group = (b) => (b.kind === 'spot' ? (/ferry|shuttle|船票|接驳/i.test(`${b.en} ${b.name}`) ? 'transport' : 'ticket') : b.kind);
@@ -1598,31 +1589,40 @@ const TRIP = {"id":"东京-2027","title":"东京 2027","subtitle":"10 days · 2 
         notes.length ? el('p', { class: 'bk-note', text: notes.join(' · ') }) : null);
     };
     for (const b of TRIP.book_it) {
-      if (b.kind === 'spot') { // no link: bought at the door or in WeChat; a plain card, its ways below (user, 2026-10-19)
-        const g = group(b), d = el('div', { class: 'ticket bk-spot', 'data-k': g });
-        d.append(el('div', { class: 'sum' }, el('span', { class: 'ki', text: `${g === 'transport' ? '🚆 Transport' : '🎟️ Ticket'} · 📍 ${b.site} · ${b.city} · ${b.when}` }), el('b', { text: b.name }), el('span', { class: 'en', text: [b.en, b.price].filter(Boolean).join(' · ') })));
-        list.append(d); const w = ways(b, g); if (w) list.append(w); continue;
+      const g = group(b);
+      const blk = el('div', { class: 'bk-block', 'data-k': g });
+      if (b.kind === 'spot') {
+        blk.append(el('div', { class: 'bk-spot' }, el('div', { class: 'sum' },
+          el('span', { class: 'ki', text: `${g === 'transport' ? '🚆 Transport' : '🎟️ Ticket'} · 📍 ${b.site} · ${b.city} · ${b.when}` }),
+          el('b', { text: b.name }),
+          el('span', { class: 'en', text: [b.en, b.price].filter(Boolean).join(' · ') }))));
+      } else {
+        const ticketType = b.kind === 'transport' ? bookingTicketType(b) : '';
+        if (ticketType) {
+          blk.append(bookingTicket(b, ticketType));
+        } else {
+          const hotel = b.kind === 'hotel';
+          const ph = el('div', { class: 'ph' });
+          if (b.img) ph.append(el('img', { src: b.img, alt: '', loading: 'lazy' }));
+          else if (b.art && TRIP.art && TRIP.art[b.art]) { const a = el('div', { class: 'art', 'aria-hidden': 'true' }); a.innerHTML = TRIP.art[b.art]; ph.append(a); }
+          const ride = b.kind === 'transport';
+          ph.append(el('span', { class: 'tag', text: hotel ? 'HOTEL' : ride ? 'TRANSPORT' : 'TICKET' }));
+          if (b.img_note) ph.append(el('span', { class: 'pn', text: b.img_note }));
+          if (b.credit) credits.push(`${b.name}: ${b.credit}`);
+          blk.append(el('div', { class: `bk-head ${hotel ? '' : 'ticket-k'}` }, ph,
+            el('div', { class: 'mid' },
+              el('span', { class: 'ki', text: `${hotel ? '🏨 Stay' : ride ? '🚆 Transport' : '🎟️ Ticket'} · ${b.city}` }),
+              el('span', { class: 'nm', text: b.name }),
+              el('span', { class: 'en', text: b.en }),
+              el('span', { class: 'row' }, el('span', { text: b.when }), el('b', { text: b.price })))));
+        }
       }
-      const ticketType = b.kind === 'transport' ? bookingTicketType(b) : '';
-      if (ticketType) { list.append(bookingTicket(b, ticketType)); const w = ways(b, b.kind); if (w) list.append(w); continue; }
-      const hotel = b.kind === 'hotel';
-      const ph = el('div', { class: 'ph' });
-      if (b.img) ph.append(el('img', { src: b.img, alt: '', loading: 'lazy' }));
-      else if (b.art && TRIP.art && TRIP.art[b.art]) { const a = el('div', { class: 'art', 'aria-hidden': 'true' }); a.innerHTML = TRIP.art[b.art]; ph.append(a); }
-      const ride = b.kind === 'transport';
-      ph.append(el('span', { class: 'tag', text: hotel ? 'HOTEL' : ride ? 'TRANSPORT' : 'TICKET' }));
-      if (b.img_note) ph.append(el('span', { class: 'pn', text: b.img_note }));
-      if (b.credit) credits.push(`${b.name}: ${b.credit}`);
-      const t = el('a', { class: `bk ${hotel ? '' : 'ticket-k'}`, href: b.url, target: '_blank', rel: 'noopener', 'data-k': b.kind, 'aria-label': `Book ${b.name} on ${b.site}` }, ph,
-        el('div', { class: 'mid' }, el('span', { class: 'ki', text: `${hotel ? '🏨 Stay' : ride ? '🚆 Transport' : '🎟️ Ticket'} · ${b.city}` }), el('span', { class: 'nm', text: b.name }), el('span', { class: 'en', text: b.en }),
-          el('span', { class: 'row' }, el('span', { text: b.when }), el('b', { text: b.price }))),
-        el('div', { class: 'stub', 'aria-hidden': 'true' }, el('span', { text: `${b.site} ›` })));
-      t.addEventListener('click', () => t.classList.add('torn')); // the link opens in a new tab; the stub tears off here
-      list.append(t);
-      const w = ways(b, b.kind); if (w) list.append(w); // the ways to book under the card
+      const w = ways(b, g);
+      if (w) blk.append(w);
+      list.append(blk);
     }
     filter('all');
-    s.append(chips, list, el('p', { class: 'foot', text: `Tap a ticket, or the button in its block, to book it.${TRIP.book_it.some((b) => b.kind === 'spot') ? ' 📍 tickets are bought on the spot (at the door, or in WeChat / Alipay): each block below is one way to book.' : ''} Prices are per person in the local currency and MYR, as of in ${TRIP.cover.from.slice(0, 4)}; check the site for today's price. Some links may earn us a small referral fee.` }));
+    s.append(chips, list, el('p', { class: 'foot', text: `Tap the button in a block to book it.${TRIP.book_it.some((b) => b.kind === 'spot') ? ' 📍 tickets are bought on the spot (at the door, or in WeChat / Alipay): each block below is one way to book.' : ''} Prices are per person in the local currency and MYR, as of in ${TRIP.cover.from.slice(0, 4)}; check the site for today's price. Some links may earn us a small referral fee.` }));
     if (credits.length) s.append(el('p', { class: 'foot', text: `Photos: ${credits.join(' · ')}.` }));
     return s;
   }
