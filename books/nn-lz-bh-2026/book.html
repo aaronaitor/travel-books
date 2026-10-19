@@ -465,14 +465,14 @@ body.phone .hotel{font-size:14px}
 .bk-spot .sum{display:flex;flex-direction:column;gap:1px;padding:9px 14px}
 .bk-spot .ki{font:600 10.5px/1.3 var(--mono);letter-spacing:.06em;color:var(--accent)}
 .bk-spot .en{font-size:12px;color:var(--muted)}
-/* one block per way to book, in that app's colours: name only, no icon (user, 2026-10-19) */
-.bk-ways{display:flex;flex-direction:column;gap:8px;margin-top:-6px}
-.bk-way{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px;line-height:1.45}
-.bk-way .wn{display:block;padding:6px 12px;background:var(--w);color:var(--wt);font:700 12px/1.3 var(--sans);letter-spacing:.04em}
-.bk-steps{margin:0;padding:8px 14px 8px 32px}.bk-steps li+li{margin-top:4px}
-.bk-steps a,.bk-go{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;margin:2px 0 2px 6px;border-radius:10px;background:var(--w);color:var(--wt);font:600 14px var(--sans);text-decoration:none}
-.bk-go{margin:2px 12px 10px}
-.bk-note{margin:0;font-size:11.5px;color:var(--muted)}
+/* one block per way to book, in that app's colours: name only, no icon; side by side, not stacking (user, 2026-10-19) */
+.bk-ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:8px;margin-top:-6px;align-items:stretch}
+.bk-way{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px;line-height:1.45;min-width:0}
+.bk-way .wn{display:block;padding:6px 10px;background:var(--w);color:var(--wt);font:700 12px/1.3 var(--sans);letter-spacing:.04em}
+.bk-steps{flex:1;margin:0;padding:8px 12px 8px 24px;overflow-wrap:anywhere}.bk-steps li+li{margin-top:4px}
+.bk-steps a,.bk-go{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 12px;margin:2px 0 2px 4px;border-radius:8px;background:var(--w);color:var(--wt);font:600 13px var(--sans);text-decoration:none}
+.bk-go{margin:auto 10px 10px}
+.bk-note{grid-column:1/-1;margin:0;font-size:11.5px;color:var(--muted)}
   /* Bookable flights and trains use the wallet's real-ticket artwork, with the booking action kept below it. */
   .bk-ticket{position:relative;display:flex;flex-direction:column;gap:0;filter:drop-shadow(0 3px 6px rgba(20,30,30,.16));transform:rotate(-.5deg);transition:transform .25s}
   .bk-ticket:nth-child(even){transform:rotate(.6deg)} .bk-ticket:hover{transform:rotate(0) translateY(-2px)}
