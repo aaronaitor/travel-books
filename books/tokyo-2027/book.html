@@ -453,19 +453,29 @@ body.phone .hotel{font-size:14px}
 .bk-head .row b{font-size:14px;color:var(--k)}
 .bk-head .row>*{white-space:nowrap}
 @media (max-width:520px){.bk-head{grid-template-columns:30% 1fr}.bk-head .nm{font-size:14px}}
-.bk-spot{background:var(--surface);box-shadow:inset 4px 0 0 var(--accent)}
-.bk-spot .sum{display:flex;flex-direction:column;gap:2px;padding:10px 14px}
-.bk-spot .ki{font:600 10.5px/1.3 var(--mono);letter-spacing:.06em;color:var(--accent)}
-.bk-spot .sum b{font:700 15px/1.3 var(--zh);color:var(--ink)}
-.bk-spot .en{font-size:12px;color:var(--muted)}
+.bk-entry{display:flex;align-items:center;gap:10px;padding:12px 14px;border-left:4px solid var(--hi);min-width:0}
+.bk-entry .sum{display:flex;flex:1;flex-direction:column;gap:3px;min-width:0}
+.bk-entry .ki{font:600 11px/1.3 var(--mono);letter-spacing:.06em;color:var(--hi)}
+.bk-entry .nm{font:700 16px/1.3 var(--zh);color:var(--ink)}
+.bk-entry .en,.bk-entry .when{font-size:12px;color:var(--muted)}
+.bk-entry .price{font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+.bk-entry img{width:68px;height:68px;object-fit:cover;border-radius:6px;flex:none}
 /* one block per way to book, in that app's colours: name only, no icon; side by side, not stacking (user, 2026-10-19) */
-.bk-ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:8px;padding:10px 12px 12px;background:color-mix(in srgb,var(--surface-2) 35%,var(--surface));border-top:1px solid var(--line);align-items:stretch}
+.bk-ways{display:grid;grid-template-columns:1fr;gap:8px;padding:10px 12px 12px;background:color-mix(in srgb,var(--surface-2) 35%,var(--surface));border-top:1px solid var(--line);align-items:stretch}
+.bk-ways.multi{grid-template-columns:repeat(2,minmax(132px,1fr));overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity}
+.bk-ways.multi.many{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(132px,1fr)}
+.bk-ways.multi .bk-way{scroll-snap-align:start}
+@media (min-width:400px){.bk-ways.multi{grid-template-columns:repeat(2,minmax(160px,1fr))}.bk-ways.multi.many{grid-auto-columns:minmax(160px,1fr)}}
+.bk-swipe{margin:0;padding:0 12px 9px;color:var(--muted);font:11px var(--sans)}
+@media (min-width:400px){.bk-swipe.two{display:none}}
 .bk-way{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px;line-height:1.45;min-width:0}
 .bk-way .wn{display:block;padding:6px 10px;background:var(--w);color:var(--wt);font:700 12px/1.3 var(--sans);letter-spacing:.04em}
-.bk-steps{flex:1;margin:0;padding:8px 12px 8px 24px;overflow-wrap:anywhere}.bk-steps li+li{margin-top:4px}
+.bk-steps{flex:1;margin:0;padding:8px 12px 8px 24px;overflow-wrap:anywhere}.bk-steps li+li{margin-top:6px}
 .bk-steps a,.bk-go{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 12px;margin:2px 0 2px 4px;border-radius:8px;background:var(--w);color:var(--wt);font:600 13px var(--sans);text-decoration:none}
 .bk-go{margin:auto 10px 10px}
-.bk-note{grid-column:1/-1;margin:0;font-size:11.5px;color:var(--muted)}
+.bk-guide{padding:10px 14px 12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.bk-guide b{display:block;margin-bottom:4px;color:var(--ink);font-size:13px}
+.bk-guide p{margin:4px 0;overflow-wrap:anywhere}
   /* Bookable flights and trains use the wallet's real-ticket artwork, with the booking action kept below it. */
   .bk-ticket{position:relative;display:flex;flex-direction:column;gap:0}
   .bk-ticket .bpass,.bk-ticket .cnt,.bk-ticket .jrt{width:100%;max-width:none;box-shadow:none;border-radius:0}
@@ -1563,39 +1573,46 @@ const TRIP = {"id":"东京-2027","title":"东京 2027","subtitle":"10 days · 2 
     // how to buy, step by step; a link in a step (e.g. the Klook option, user 2026-10-18) becomes a button named after its site
     const stepLi = (x) => el('li', {}, ...x.split(/(https?:\/\/\S+)/).map((p, i) => (i % 2
       ? el('a', { href: p, target: '_blank', rel: 'noopener', text: `${/klook/.test(p) ? 'Klook' : /trip\.com/.test(p) ? 'Trip.com' : 'Official site'} ›` }) : p)));
-    // One block per way to book, in the app's brand colour, named in text only (user, 2026-10-19). b.steps is free text, so a small keyword
-    // table sorts it: the way a step names first starts or selects its block, steps naming none stay in the current one, "Source:" and
-    // "No Klook ticket" lines become a grey footnote. [name, colour, text colour, pattern]
+    // One block per way to book, in the app's brand colour, named in text only (user, 2026-10-19). b.steps is free text;
+    // a step naming a way selects its block, while Guide:/Source:/availability notes follow all numbered steps. [name, colour, text colour, pattern]
     // ponytail: keywords on free text; a step naming two ways goes to the first, a payment method ("WeChat Pay") names none; give book_it a "way" field if this misfiles
     const OFFICIAL = ['Official site', '#3A4656', '#fff', /official\b[^,;]{0,8}site|官网/i];
     const WAYS = [['Trip.com', '#287DFA', '#fff', /trip\.com/i], ['Klook', '#FF5B00', '#fff', /klook/i], ['12306', '#3A75C4', '#fff', /12306/],
-      ['WeChat', '#07C160', '#fff', /wechat|微信|mini program/i], ['Alipay', '#1677FF', '#fff', /alipay|支付宝/i], ['美团', '#FFC300', '#222', /美团|大众点评|meituan/i],
+      ['WeChat', '#07C160', '#fff', /wechat|微信|mini program/i], ['Alipay', '#1677FF', '#fff', /alipay|支付宝/i], ['美团', '#FFC300', '#222', /美团|大众点评|meituan/i], ['Hotel front desk', '#6F706B', '#fff', /(?:canton )?hotel front desk/i], ['Online', '#3A4656', '#fff', /^online\b/i],
       ['China Southern', '#0B6CB4', '#fff', /china southern|csair|南方航空/i], ['AirAsia', '#E4002B', '#fff', /airasia/i], ['JR', '#00A040', '#fff', /\bJR\b/], OFFICIAL,
-      ['On the spot', '#8E8E93', '#fff', /no booking|\bbuy at|^or the (?:station )?window|^octopus|ticket (?:window|office|hall|booth)|at the booth/i]];
+      ['On the spot', '#8E8E93', '#fff', /on the spot|no booking|\bbuy at|^or the (?:station )?window|^octopus|ticket (?:window|office|hall|booth)|at the booth/i]];
     const way = (x) => { let w, at = 1e9; for (const v of WAYS) { const m = v[3].exec(x); if (m && m.index < at) { w = v; at = m.index; } } return w; };
-    const ways = (b, g) => {
+    const ways = (b) => {
       const blocks = new Map(), notes = [], block = (w) => blocks.get(w[0]) || blocks.set(w[0], { w, li: [] }).get(w[0]);
-      let cur = ['Steps', '#636366', '#fff'];
-      if (b.url) block(way(`${b.url} ${b.site}`) || OFFICIAL).go = true; // the item's own Book on button, in its app's block
+      const bookWay = b.url && (way(`${b.url} ${b.site}`) || OFFICIAL);
+      let cur = b.kind === 'ticket' || b.kind === 'spot' ? (way(b.site || '') || WAYS[WAYS.length - 1]) : way(b.site || '') || ['Steps', '#636366', '#fff'];
       for (const x of b.steps || []) {
-        if (/^(?:Source:|No Klook|Not Klook|Klook (?:has|sells) only)/i.test(x)) { notes.push(x); continue; }
+        if (/^(?:Guide:|Source:|No Klook|Not Klook|Klook (?:has|sells) only)/i.test(x)) { notes.push(x.replace(/^Guide:\s*/i, '')); continue; }
         cur = way(x.replace(/https?:\/\/\S+/g, '').replace(/WeChat Pay( *\/ *Alipay)?/gi, '')) || cur;
         block(cur).li.push(x);
       }
+      if (bookWay) block(bookWay).go = true; // append its Book on button after any step-led ways
       if (!blocks.size && !notes.length) return null;
-      return el('div', { class: 'bk-ways', 'data-k': g }, ...[...blocks.values()].map((v) => el('section', { class: 'bk-way', style: `--w:${v.w[1]};--wt:${v.w[2]}` }, el('b', { class: 'wn', text: v.w[0] }),
+      const result = document.createDocumentFragment();
+      if (blocks.size) result.append(el('div', { class: `bk-ways${blocks.size > 1 ? ' multi' : ''}${blocks.size > 2 ? ' many' : ''}` }, ...[...blocks.values()].map((v) => el('section', { class: 'bk-way', style: `--w:${v.w[1]};--wt:${v.w[2]}` }, el('b', { class: 'wn', text: v.w[0] }),
         v.li.length ? el('ol', { class: 'bk-steps' }, ...v.li.map(stepLi)) : null,
-        v.go ? el('a', { class: 'bk-go', href: b.url, target: '_blank', rel: 'noopener', text: `Book on ${b.site}` }) : null)),
-        notes.length ? el('p', { class: 'bk-note', text: notes.join(' · ') }) : null);
+        v.go ? el('a', { class: 'bk-go', href: b.url, target: '_blank', rel: 'noopener', text: `Book on ${b.site}` }) : null))));
+      if (blocks.size > 1) result.append(el('p', { class: `bk-swipe${blocks.size === 2 ? ' two' : ''}`, text: 'Swipe sideways for more booking ways →' }));
+      if (notes.length) result.append(el('div', { class: 'bk-guide' }, el('b', { text: 'Guide' }), ...notes.map((x) => el('p', { text: x }))));
+      return result;
     };
     for (const b of TRIP.book_it) {
       const g = group(b);
       const blk = el('div', { class: 'bk-block', 'data-k': g });
-      if (b.kind === 'spot') {
-        blk.append(el('div', { class: 'bk-spot' }, el('div', { class: 'sum' },
-          el('span', { class: 'ki', text: `${g === 'transport' ? '🚆 Transport' : '🎟️ Ticket'} · 📍 ${b.site} · ${b.city} · ${b.when}` }),
-          el('b', { text: b.name }),
-          el('span', { class: 'en', text: [b.en, b.price].filter(Boolean).join(' · ') }))));
+      if (g === 'ticket') {
+        blk.append(el('div', { class: 'bk-entry' }, el('div', { class: 'sum' },
+          el('span', { class: 'ki', text: `🎟️ Ticket · ${b.city}` }),
+          el('span', { class: 'nm', text: b.name }),
+          b.en ? el('span', { class: 'en', text: b.en }) : null,
+          el('span', { class: 'when', text: b.when }),
+          el('b', { class: 'price', text: b.price })),
+          b.img ? el('img', { src: b.img, alt: '', loading: 'lazy' }) : null));
+        if (b.credit) credits.push(`${b.name}: ${b.credit}`);
       } else {
         const ticketType = b.kind === 'transport' ? bookingTicketType(b) : '';
         if (ticketType) {
@@ -1617,12 +1634,12 @@ const TRIP = {"id":"东京-2027","title":"东京 2027","subtitle":"10 days · 2 
               el('span', { class: 'row' }, el('span', { text: b.when }), el('b', { text: b.price })))));
         }
       }
-      const w = ways(b, g);
+      const w = ways(b);
       if (w) blk.append(w);
       list.append(blk);
     }
     filter('all');
-    s.append(chips, list, el('p', { class: 'foot', text: `Tap the button in a block to book it.${TRIP.book_it.some((b) => b.kind === 'spot') ? ' 📍 tickets are bought on the spot (at the door, or in WeChat / Alipay): each block below is one way to book.' : ''} Prices are per person in the local currency and MYR, as of in ${TRIP.cover.from.slice(0, 4)}; check the site for today's price. Some links may earn us a small referral fee.` }));
+    s.append(chips, list, el('p', { class: 'foot', text: `Choose a way to book and follow its steps. Prices are per person in the local currency and MYR, as of ${TRIP.cover.from.slice(0, 4)}; check the site for today's price. Some links may earn us a small referral fee.` }));
     if (credits.length) s.append(el('p', { class: 'foot', text: `Photos: ${credits.join(' · ')}.` }));
     return s;
   }
