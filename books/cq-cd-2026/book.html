@@ -452,7 +452,27 @@ body.phone .hotel{font-size:14px}
 .bk-head .row{display:flex;justify-content:space-between;align-items:end;gap:8px;margin-top:auto;font:500 12px var(--mono);flex-wrap:wrap;row-gap:2px}
 .bk-head .row b{font-size:14px;color:var(--k)}
 .bk-head .row>*{white-space:nowrap}
-@media (max-width:520px){.bk-head{grid-template-columns:30% 1fr}.bk-head .nm{font-size:14px}}
+@media (max-width:520px){.bk-head{grid-template-columns:1fr}.bk-head .ph{height:120px}.bk-head .ph:not(:has(img,.art)){display:none}.bk-head .nm{font-size:14px}}
+/* Used booking stubs keep the how, not the other options (user, 2026-10-21). */
+.bk-stub{display:flex;flex-direction:column}
+.bk-stub .ph{height:130px;position:relative;overflow:hidden;background:var(--surface-2)}
+.bk-stub .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.bk-stub .ph .art{height:100%;display:grid;place-items:center}.bk-stub .ph .art svg{width:100%;height:100%}
+.bk-stub .ph .tag{position:absolute;left:6px;top:6px;background:var(--hi);color:#fff;font:700 10px/1 var(--mono);letter-spacing:.08em;padding:4px 6px;border-radius:4px}
+.bk-stub .ph .pn{position:absolute;left:0;right:0;bottom:0;padding:10px 6px 4px;font-size:10px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.bk-stub .top{padding:12px 14px 10px;display:flex;flex-direction:column;gap:3px}
+.bk-stub .top .ki{font:600 11px/1.3 var(--mono);letter-spacing:.06em;color:var(--hi)}
+.bk-stub .top .nm{font:700 17px/1.3 var(--zh);overflow-wrap:anywhere}
+.bk-stub .top .en{font-size:12px;color:var(--muted)}
+.bk-stub .tear{border-top:1.5px dashed var(--line);margin:0 12px;position:relative}
+.bk-stub .tear::before,.bk-stub .tear::after{content:"";position:absolute;top:-10px;width:18px;height:18px;border-radius:50%;background:var(--paper)}
+.bk-stub .tear::before{left:-21px}.bk-stub .tear::after{right:-21px}
+.bk-stub .row{display:flex;justify-content:space-between;gap:8px;padding:10px 14px 4px;font:500 13px var(--mono)}
+.bk-stub .row b{font-size:15px;color:var(--ink)}
+.bk-stub .used{padding:4px 14px 14px;display:flex;flex-direction:column;gap:6px}
+.bk-stub .used .ln{margin:0;font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+.bk-stub .used .pill{display:inline-flex;padding:3px 9px;border-radius:999px;background:var(--w);color:var(--wt);font:600 12px var(--sans);text-decoration:none;margin-right:6px;white-space:nowrap}
+.bk-stub .used a.pill{min-height:36px;align-items:center;align-self:flex-start}
 .bk-entry{display:flex;align-items:center;gap:10px;padding:12px 14px;border-left:4px solid var(--hi);min-width:0}
 .bk-entry .sum{display:flex;flex:1;flex-direction:column;gap:3px;min-width:0}
 .bk-entry .ki{font:600 11px/1.3 var(--mono);letter-spacing:.06em;color:var(--hi)}
@@ -1576,7 +1596,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     // One block per way to book, in the app's brand colour, named in text only (user, 2026-10-19). b.steps is free text;
     // a step naming a way selects its block, while Guide:/Source:/availability notes follow all numbered steps. [name, colour, text colour, pattern]
     // ponytail: keywords on free text; a step naming two ways goes to the first, a payment method ("WeChat Pay") names none; give book_it a "way" field if this misfiles
-    const OFFICIAL = ['Official site', '#3A4656', '#fff', /official\b[^,;]{0,8}site|官网/i];
+    const OFFICIAL = ['Official site', '#3A4656', '#fff', /official\b[^,;]{0,8}(?:site|platform)|官网/i];
     const WAYS = [['Trip.com', '#287DFA', '#fff', /trip\.com/i], ['Klook', '#FF5B00', '#fff', /klook/i], ['12306', '#3A75C4', '#fff', /12306/],
       ['WeChat', '#07C160', '#fff', /wechat|微信|mini program/i], ['Alipay', '#1677FF', '#fff', /alipay|支付宝/i], ['美团', '#FFC300', '#222', /美团|大众点评|meituan/i], ['Hotel front desk', '#6F706B', '#fff', /(?:canton )?hotel front desk/i], ['Online', '#3A4656', '#fff', /^online\b/i],
       ['China Southern', '#0B6CB4', '#fff', /china southern|csair|南方航空/i], ['AirAsia', '#E4002B', '#fff', /airasia/i], ['JR', '#00A040', '#fff', /\bJR\b/], OFFICIAL,
@@ -1594,7 +1614,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       if (bookWay) block(bookWay).go = true; // append its Book on button after any step-led ways
       if (!blocks.size && !notes.length) return null;
       const result = document.createDocumentFragment();
-      if (blocks.size) result.append(el('div', { class: `bk-ways${blocks.size > 1 ? ' multi' : ''}${blocks.size > 2 ? ' many' : ''}` }, ...[...blocks.values()].map((v) => el('section', { class: 'bk-way', style: `--w:${v.w[1]};--wt:${v.w[2]}` }, el('b', { class: 'wn', text: v.w[0] }),
+      if (blocks.size) result.append(el('div', { class: `bk-ways${blocks.size > 1 ? ' multi' : ''}${blocks.size > 2 ? ' many' : ''}` }, ...[...blocks.values()].map((v) => el('section', { class: 'bk-way', style: `--w:${v.w[1]};--wt:${v.w[2]}` }, v.li.length ? el('b', { class: 'wn', text: v.w[0] }) : null,
         v.li.length ? el('ol', { class: 'bk-steps' }, ...v.li.map(stepLi)) : null,
         v.go ? el('a', { class: 'bk-go', href: b.url, target: '_blank', rel: 'noopener', text: `Book on ${b.site}` }) : null))));
       if (blocks.size > 1) result.append(el('p', { class: `bk-swipe${blocks.size === 2 ? ' two' : ''}`, text: 'Swipe sideways for more booking ways →' }));
@@ -1604,6 +1624,35 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
     for (const b of TRIP.book_it) {
       const g = group(b);
       const blk = el('div', { class: 'bk-block', 'data-k': g });
+      if (tripOver && (g === 'hotel' || g === 'ticket')) { // one used booking per stub (user, 2026-10-21)
+        const stub = el('div', { class: 'bk-stub' }), used = el('div', { class: 'used' });
+        if (b.img || (b.art && TRIP.art && TRIP.art[b.art])) {
+          const ph = el('div', { class: 'ph' });
+          if (b.img) ph.append(el('img', { src: b.img, alt: '', loading: 'lazy' }));
+          else { const a = el('div', { class: 'art', 'aria-hidden': 'true' }); a.innerHTML = TRIP.art[b.art]; ph.append(a); }
+          ph.append(el('span', { class: 'tag', text: g.toUpperCase() }));
+          if (b.img && b.img_note) ph.append(el('span', { class: 'pn', text: b.img_note }));
+          stub.append(ph);
+        }
+        if (b.url) {
+          const w = way(`${b.url} ${b.site}`) || OFFICIAL;
+          used.append(el('a', { class: 'pill', href: b.url, target: '_blank', rel: 'noopener', style: `--w:${w[1]};--wt:${w[2]}`, text: `Booked on ${b.site} ↗` }));
+        } else {
+          let w = way(b.site || '') || WAYS[WAYS.length - 1];
+          for (const x of b.steps || []) {
+            if (/^(?:Guide:|Source:|No Klook|Not Klook|Klook (?:has|sells) only)/i.test(x)) continue;
+            w = way(x.replace(/https?:\/\/\S+/g, '').replace(/WeChat Pay( *\/ *Alipay)?/gi, '')) || w;
+            const m = w[3].exec(x), rest = m && m.index === 0 ? x.slice(m[0].length).replace(/^\s*(?:→\s*)?/, '') : x;
+            used.append(el('p', { class: 'ln' }, el('span', { class: 'pill', style: `--w:${w[1]};--wt:${w[2]}`, text: w[0] }), rest));
+          }
+        }
+        stub.append(el('div', { class: 'top' }, el('span', { class: 'ki', text: `${g === 'hotel' ? '🏨 Stay' : '🎟️ Ticket'} · ${b.city}` }),
+          el('span', { class: 'nm', text: b.name }), b.en ? el('span', { class: 'en', text: b.en }) : null), el('div', { class: 'tear' }),
+          el('div', { class: 'row' }, el('span', { text: b.when }), el('b', { text: b.price })), used);
+        blk.append(stub); list.append(blk);
+        if (b.credit) credits.push(`${b.name}: ${b.credit}`);
+        continue;
+      }
       if (g === 'ticket') {
         blk.append(el('div', { class: 'bk-entry' }, el('div', { class: 'sum' },
           el('span', { class: 'ki', text: `🎟️ Ticket · ${b.city}` }),
@@ -1639,7 +1688,7 @@ const TRIP = {"id":"重庆-成都-2026","title":"重庆-成都 2026","subtitle":
       list.append(blk);
     }
     filter('all');
-    s.append(chips, list, el('p', { class: 'foot', text: `Choose a way to book and follow its steps. Prices are per person in the local currency and MYR, as of ${TRIP.cover.from.slice(0, 4)}; check the site for today's price. Some links may earn us a small referral fee.` }));
+    s.append(chips, list, el('p', { class: 'foot', text: tripOver ? `What we booked and how we paid for it. Prices are per person, as of ${TRIP.cover.from.slice(0, 4)}.` : `Choose a way to book and follow its steps. Prices are per person in the local currency and MYR, as of ${TRIP.cover.from.slice(0, 4)}; check the site for today's price. Some links may earn us a small referral fee.` }));
     if (credits.length) s.append(el('p', { class: 'foot', text: `Photos: ${credits.join(' · ')}.` }));
     return s;
   }
